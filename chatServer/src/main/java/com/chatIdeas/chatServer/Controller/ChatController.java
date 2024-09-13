@@ -16,13 +16,11 @@ public class ChatController {
     @SendTo("/chatroom/public") //his annotation specifies that the return value of the receivePublicMessage method should be sent to the destination /chatroom/publi
     public Message receivePublicMessage(@Payload Message message){
         //When a WebSocket client sends a message to the server, the message typically includes a body(such as a JSON object).The @Payload annotation is used in the method parameter to automatically convert and inject this message payload into the method parameter.It simply converts the json object into varaibles specified in message method
-
         return message;
     }
     @MessageMapping("/private-message")
     public Message receivePrivateMessage(@Payload Message message) {
-
-        simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(),"/private",message); //  The convertAndSendToUser method uses the message.getReceiverName() to determine the recipient and routes the message to /user/{username}/private.
+        simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(), "/queue/private", message);//  The convertAndSendToUser method uses the message.getReceiverName() to determine the recipient and routes the message to /user/{username}/private.
         return message;
     }
 

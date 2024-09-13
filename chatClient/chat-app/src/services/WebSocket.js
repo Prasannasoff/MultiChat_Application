@@ -6,8 +6,10 @@ const WEBSOCKET_URL = 'http://localhost:8081/ws'; // Adjust to your server URL
 
 let stompClient = null;
 
-export const connect = (onMessageReceived, onPrivateMessageReceived) => {
+export const connect = (CurrentUser, onMessageReceived, onPrivateMessageReceived) => {
   const socket = new SockJS(WEBSOCKET_URL);
+
+  console.log("Name" + CurrentUser);
   stompClient = new Client({
     webSocketFactory: () => socket,
     connectHeaders: {},
@@ -15,10 +17,9 @@ export const connect = (onMessageReceived, onPrivateMessageReceived) => {
     onConnect: () => {
       stompClient.subscribe('/chatroom/public', (message) => {
         console.log("Public Message Received", message.body);
-
         onMessageReceived(JSON.parse(message.body));
       });
-      stompClient.subscribe('/user/queue/private', (message) => {
+      stompClient.subscribe(`/user/${CurrentUser}/queue/private`, (message) => {
         console.log("Private Message Received", message.body);
         onPrivateMessageReceived(JSON.parse(message.body));
       });

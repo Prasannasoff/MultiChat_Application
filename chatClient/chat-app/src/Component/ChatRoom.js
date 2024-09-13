@@ -1,28 +1,54 @@
 // src/ChatApp.js
 import React, { useState, useEffect } from 'react';
 import { connect, sendPublicMessage, sendPrivateMessage } from '../services/WebSocket';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 const ChatApp = () => {
+    const location = useLocation();
     const [publicMessages, setPublicMessages] = useState([]);
     const [privateMessages, setPrivateMessages] = useState([]);
     const [message, setMessage] = useState('');
     const [privateRecipient, setPrivateRecipient] = useState('');
+    const [UserDetail, SetUserDetail] = useState([]);
+    const CurrentUser = location.state;
+
+    console.log("Data:" + CurrentUser);
 
     useEffect(() => {
-        connect(
-            (msg) => setPublicMessages((prev) => [...prev, msg]),
-            (msg) => setPrivateMessages((prev) => [...prev, msg])
-        );
+        const fetchDataAndConnect = async () => {
+
+            const response = await axios.get("http://localhost:8081/api/getData");
+            console.log("Data:" + response.data);
+            SetUserDetail(response.data);
+
+
+            const webSocketConnection = connect(
+                CurrentUser,
+                (msg) => setPublicMessages((prev) => [...prev, msg]),
+                (msg) => setPrivateMessages((prev) => [...prev, msg])
+            );
+
+            // Cleanup function to close WebSocket on component unmount
+            return () => {
+                if (webSocketConnection && typeof webSocketConnection.close === 'function') {
+                    webSocketConnection.close();
+                }
+            };
+        };
+
+        fetchDataAndConnect();
     }, []);
 
+
     const handlePublicMessageSend = () => {
-        sendPublicMessage({ senderName: 'User', message });
+        sendPublicMessage({ senderName: CurrentUser, message });
         setMessage('');
     };
 
     const handlePrivateMessageSend = () => {
         sendPrivateMessage({
-            senderName: 'User',
+            senderName: CurrentUser,
             receiverName: privateRecipient,
             message,
         });
@@ -49,12 +75,18 @@ const ChatApp = () => {
 
             <div>
                 <h2>Private Chat</h2>
-                <input
-                    type="text"
-                    placeholder="Recipient"
+                <select
                     value={privateRecipient}
                     onChange={(e) => setPrivateRecipient(e.target.value)}
-                />
+                >
+                    <option value="">Select Recipient</option> {/* Default option */}
+                    {UserDetail.map(user => (
+                        <option key={user.id} value={user.user_name}>
+                            {user.user_name}
+                        </option>
+                    ))}
+                </select>
+
                 <div>
                     {privateMessages.map((msg, index) => (
                         <div key={index}>{`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>
@@ -66,6 +98,7 @@ const ChatApp = () => {
                     onChange={(e) => setMessage(e.target.value)}
                 />
                 <button onClick={handlePrivateMessageSend}>Send Private Message</button>
+
             </div>
         </div>
     );
