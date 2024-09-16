@@ -8,7 +8,8 @@ function RegisterPage() {
   const handleRegister = async () => {
     const response = await axios.post("http://localhost:8081/api/save", { user_name: name });
     console.log(response.data);
-   
+    navigate('/');
+
   }
   return (
     <div>

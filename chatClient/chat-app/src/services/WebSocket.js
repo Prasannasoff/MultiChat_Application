@@ -1,28 +1,29 @@
-// src/services/WebSocketService.js
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import axios from 'axios';
 
-const WEBSOCKET_URL = 'http://localhost:8081/ws'; // Adjust to your server URL
+const WEBSOCKET_URL = 'http://localhost:8081/ws';
 
 let stompClient = null;
 
 export const connect = (CurrentUser, onMessageReceived, onPrivateMessageReceived) => {
   const socket = new SockJS(WEBSOCKET_URL);
 
-  console.log("Name" + CurrentUser);
   stompClient = new Client({
     webSocketFactory: () => socket,
     connectHeaders: {},
     debug: (str) => console.log(str),
     onConnect: () => {
       stompClient.subscribe('/chatroom/public', (message) => {
-        console.log("Public Message Received", message.body);
         onMessageReceived(JSON.parse(message.body));
       });
+
       stompClient.subscribe(`/user/${CurrentUser}/queue/private`, (message) => {
-        console.log("Private Message Received", message.body);
         onPrivateMessageReceived(JSON.parse(message.body));
       });
+
+      // Fetch missed messages via an API call
+
     },
     onStompError: (frame) => {
       console.error('STOMP error:', frame);
