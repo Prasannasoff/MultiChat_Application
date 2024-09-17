@@ -1,8 +1,10 @@
 package com.chatIdeas.chatServer.Controller;
 
 import com.chatIdeas.chatServer.Controller.model.Message;
+import com.chatIdeas.chatServer.Entity.ChatHistory;
 import com.chatIdeas.chatServer.Entity.MessageEntity;
 import com.chatIdeas.chatServer.Entity.UserDetails;
+import com.chatIdeas.chatServer.Repository.ChatHistoryRepo;
 import com.chatIdeas.chatServer.Repository.MessageRepository;
 import com.chatIdeas.chatServer.Repository.Repo;
 import com.chatIdeas.chatServer.Service.OfflineMessageService;
@@ -35,12 +37,16 @@ public class ChatController {
 @Autowired
 private MessageRepository messageRepository;
 
+    @Autowired
+    private ChatHistoryRepo chatHistoryRepo;
     @MessageMapping("/private-message")
     public void receivePrivateMessage(@Payload Message message) {
         boolean isRecipientOnline = checkUserOnline(message.getReceiverName()); // Implement this logic
         System.out.println("Status"+isRecipientOnline);
         if (isRecipientOnline) {
             simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(), "/queue/private", message);
+            ChatHistory chatHistory = new ChatHistory(message.getSenderName(), message.getReceiverName(), message.getMessage(), LocalDateTime.now());
+            chatHistoryRepo.save(chatHistory);
         } else {
             // Store the message in the database for offline users
             MessageEntity messageEntity = new MessageEntity(message.getSenderName(), message.getReceiverName(), message.getMessage(), LocalDateTime.now());

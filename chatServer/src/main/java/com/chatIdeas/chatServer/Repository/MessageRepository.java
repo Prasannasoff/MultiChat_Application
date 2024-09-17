@@ -7,5 +7,7 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends JpaRepository<MessageEntity,Long> {
     List<MessageEntity> findByReceiver(String receiver);
+    List<MessageEntity> findBySender(String receiver);
+
     void deleteByReceiver(String receiver);
 }

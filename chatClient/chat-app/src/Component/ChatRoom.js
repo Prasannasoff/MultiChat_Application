@@ -13,6 +13,8 @@ const ChatApp = () => {
     const [privateRecipient, setPrivateRecipient] = useState('');
     const [UserDetail, SetUserDetail] = useState([]);
     const [id, setId] = useState();
+    const [previousChat, setPreviousChat] = useState([]);
+    const [msgSend, setMsgSend] = useState(false);
     const CurrentUser = location.state;
     const navigate = useNavigate();
 
@@ -29,6 +31,11 @@ const ChatApp = () => {
             setId(user.user_id);
             const logInResponse = await axios.put(`http://localhost:8081/api/userLogInStatus/${user.user_id}`);
             console.log(logInResponse);
+
+            const PreviousMsg = await axios.get(`http://localhost:8081/api/getChatHistory/${CurrentUser}`);
+            console.log(PreviousMsg.data);
+            setPreviousChat(PreviousMsg.data);
+
 
 
             // axios.get(`http://localhost:8081/api/messages/${CurrentUser}`)
@@ -59,6 +66,7 @@ const ChatApp = () => {
 
         fetchDataAndConnect();
     }, [CurrentUser]);
+
     const handleLogout = async () => {
         if (id) {
             const logoutResponse = await axios.put(`http://localhost:8081/api/userLogOutStatus/${id}`);
@@ -74,15 +82,28 @@ const ChatApp = () => {
     };
 
     const handlePrivateMessageSend = () => {
-        sendPrivateMessage({
+        const newMessage = {
             senderName: CurrentUser,
             receiverName: privateRecipient,
             message,
-        });
+        };
+
+        // Send the private message
+        sendPrivateMessage(newMessage);
+
+        // Update previousChat to include the new message
+        // setPreviousChat((prevChat) => [...prevChat, newMessage]);
+
+
+        setPrivateMessages((prev) => [...prev, newMessage]); //To append our currenly sent message to the list
+
+
+        // Clear the message input
         setMessage('');
+
     };
     const getMessage = async () => {
-        const messageResponse = await axios.post(`http://localhost:8081/api/user-connected/${CurrentUser}`);
+        const messageResponse = await axios.post(`http://localhost:8081/api/user-connected/${CurrentUser}`); //TO get the offline messages
         console.log("New messages" + messageResponse.data);
         if (messageResponse.data) {
             // Assuming the data is in the expected format
@@ -127,6 +148,12 @@ const ChatApp = () => {
                     ))}
                 </select>
 
+                <div>
+                    {previousChat.map((msg, index) => (
+                        <div key={index}>{`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>
+                    ))}
+                </div>
+                {/* <div>{`${CurrentUser} to ${privateRecipient}: ${message}`}</div> */}
                 <div>
                     {privateMessages.map((msg, index) => (
                         <div key={index}>{`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>

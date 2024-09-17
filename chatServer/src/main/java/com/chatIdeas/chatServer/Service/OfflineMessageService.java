@@ -1,4 +1,6 @@
 package com.chatIdeas.chatServer.Service;
+import com.chatIdeas.chatServer.Entity.ChatHistory;
+import com.chatIdeas.chatServer.Repository.ChatHistoryRepo;
 import org.springframework.transaction.annotation.Transactional;
 import com.chatIdeas.chatServer.Controller.model.Message;
 import com.chatIdeas.chatServer.Entity.MessageEntity;
@@ -6,6 +8,8 @@ import com.chatIdeas.chatServer.Repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,6 +19,9 @@ public class OfflineMessageService {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @Autowired
+    private ChatHistoryRepo chatHistoryRepo;
     @Transactional
     public void sendPendingMessages(String receiver) {
 
@@ -26,9 +33,12 @@ public class OfflineMessageService {
             message.setReceiverName(messageEntity.getReceiver());
             message.setMessage(messageEntity.getMessage());
             simpMessagingTemplate.convertAndSendToUser(receiver, "/queue/private", message);
+            ChatHistory chatHistory = new ChatHistory(message.getSenderName(), message.getReceiverName(), message.getMessage(), LocalDateTime.now());
+            chatHistoryRepo.save(chatHistory);
         }
 
         // Optionally clear messages after sending
+
         messageRepository.deleteByReceiver(receiver);
 }
 }
