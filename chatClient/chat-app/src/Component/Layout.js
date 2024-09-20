@@ -1,6 +1,13 @@
 import React from 'react'
 import style from '../styles/Layout.module.css';
+import { useState } from 'react';
+import { setUser, clearUser } from '../redux/store';
+import { useSelector, useDispatch } from 'react-redux';
 function Layout() {
+
+  const dispatch = useDispatch();
+  const userName = useSelector(state => state.userName.user);
+
   const lst = [{
     name: 'Prasanna',
     image: "https://st4.depositphotos.com/10313122/22093/i/450/depositphotos_220936114-stock-photo-young-handsome-indian-man-against.jpg",
@@ -15,7 +22,11 @@ function Layout() {
     image: "https://img.freepik.com/free-photo/close-up-portrait-young-indian-man-with-beard-white-shirt-isolated-standing-smiling_155003-23823.jpg",
     desc: "Busy!"
   },]
+  const handleContact = (name) => {
+    dispatch(setUser(name));
 
+
+  }
   return (
 
     <div className={style.LayoutCont}>
@@ -23,9 +34,10 @@ function Layout() {
         <input type="text" className='input' placeholder='Search Contacts'></input>
       </div>
       <div className={style.ContactName}>
-        {lst.map(data =>
-          <>
-            <div className={style.nameBanner}>
+        {lst.map(data => {
+          const isActive = userName === data.name;;
+          return (
+            <div className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data.name)}>
               <img src={data.image} className={style.profile_photo}></img>
               <div className={style.about}>
                 <div className={style.name}>{data.name}</div>
@@ -33,19 +45,23 @@ function Layout() {
               </div>
 
             </div>
-          </>
+          )
+        }
         )}
 
         <div className={style.PeopleKnow}>People You may know</div>
 
         <div className={style.nameBanner}>
-          <img src={lst[0].image} className={style.profile_photo}></img> 
+          <img src={lst[0].image} className={style.profile_photo}></img>
           <div className={style.about}>
             <div className={style.name}>Raj</div>
             <div className={style.desc}>Hi</div>
           </div>
           <div className={style.addBtn}>+</div>
 
+        </div>
+        <div className={style.selectedUser}>
+          {userName ? <p>Selected User: {userName}</p> : <p>No User Selected</p>}
         </div>
 
       </div>
