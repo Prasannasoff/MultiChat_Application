@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import Layout from './Layout';
+import style from '../styles/chatRoom.module.css'
 const ChatApp = () => {
     const location = useLocation();
     const [publicMessages, setPublicMessages] = useState([]);
@@ -105,15 +106,18 @@ const ChatApp = () => {
 
         fetchPreviousChatsForContact();
     }, [ContactName, CurrentUser]);
+
+
     return (
         <div className='mainCont'>
             <Layout />
-            <h1>Chat App</h1>
-            <div>
+            <div className={style.chatCont}>
+                <h1>Chat App</h1>
+
                 <h2>{CurrentUser}</h2>
-                <h2>Public Chat</h2>
+                {/* <h2>Public Chat</h2> */}
                 <button onClick={handleLogout}>Logout</button>
-                <div>
+                {/* <div>
 
                     {publicMessages.map((msg, index) => (
                         <div key={index}>{`${msg.senderName}: ${msg.message}`}</div>
@@ -124,46 +128,57 @@ const ChatApp = () => {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                 />
-                <button onClick={handlePublicMessageSend}>Send Public Message</button>
+                <button onClick={handlePublicMessageSend}>Send Public Message</button> */}
 
-            </div>
 
-            <div>
-                <h2>Private Chat</h2>
-                <select
-                    value={privateRecipient}
-                    onChange={(e) => setPrivateRecipient(e.target.value)}
-                >
-                    <option value="">Select Recipient</option> {/* Default option */}
-                    {UserDetail.map(user => (
-                        <option key={user.id} value={user.user_name}>
-                            {user.user_name}
-                        </option>
-                    ))}
-                </select>
 
                 <div>
-                    {previousChat.map((msg, index) => (
-                        <div key={index}>{`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>
-                    ))}
-                </div>
-                {/* <div>{`${CurrentUser} to ${privateRecipient}: ${message}`}</div> */}
-                <div>
-                    {privateMessages.map((msg, index) => (
-                        <div key={index}>{`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>
-                    ))}
-                </div>
-                <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                />
-                <button onClick={handlePrivateMessageSend}>Send Private Message</button>
-                <div>  <button onClick={getMessage}>Get Message</button>
+                    {/* <h2>Private Chat</h2>
+                    <select
+                        value={privateRecipient}
+                        onChange={(e) => setPrivateRecipient(e.target.value)}
+                    >
+                        <option value="">Select Recipient</option> 
+                        {UserDetail.map(user => (
+                            <option key={user.id} value={user.user_name}>
+                                {user.user_name}
+                            </option>
+                        ))}
+                    </select> */}
+
+                    <div className={style.msgCont}>
+                        {previousChat.map((msg, index) => (
+                            msg.senderName == CurrentUser ? (
+                                <div key={index} className={style.senderOutCont}>
+                                    <div className={style.senderBox}>{msg.message}</div>
+                                </div>
+
+                            ) : (
+
+                                //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
+                                <div key={index} className={style.receiverOutCont}>
+                                    <div className={style.receiverBox}>{msg.message}</div>
+                                </div>
+                            )
+                            ))}
+                    </div>
+                    {/* <div>{`${CurrentUser} to ${privateRecipient}: ${message}`}</div> */}
+                    <div>
+                        {privateMessages.map((msg, index) => (
+                            <div key={index}>{`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>
+                        ))}
+                    </div>
+                    <input
+                        type="text"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                    />
+                    <button onClick={handlePrivateMessageSend}>Send Private Message</button>
+                    <div>  <button onClick={getMessage}>Get Message</button>
+                    </div>
                 </div>
             </div>
-
-        </div>
+        </div >
 
     );
 };
