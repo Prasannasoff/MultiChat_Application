@@ -3,7 +3,7 @@ import style from '../styles/Layout.module.css';
 import { useState } from 'react';
 import { setUser, clearUser } from '../redux/store';
 import { useSelector, useDispatch } from 'react-redux';
-function Layout() {
+function Layout({userDetail}) {
 
   const dispatch = useDispatch();
   const userName = useSelector(state => state.userName.user);
@@ -27,20 +27,29 @@ function Layout() {
 
 
   }
+    // const handleLogout = async () => {
+    //     if (id) {
+    //         const logoutResponse = await axios.put(`http://localhost:8081/api/userLogOutStatus/${id}`);
+    //         console.log(logoutResponse);
+    //         navigate('/');
+    //     }
+
+    // }
   return (
 
     <div className={style.LayoutCont}>
+      {/* <button onClick={handleLogout}>Logout</button> */}
       <div className={style.searchBar}>
         <input type="text" className='input' placeholder='Search Contacts'></input>
       </div>
       <div className={style.ContactName}>
-        {lst.map(data => {
-          const isActive = userName === data.name;;
+        {userDetail.map(data => {
+          const isActive = userName === data.user_name;;
           return (
-            <div className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data.name)}>
+            <div className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data.user_name)}>
               <img src={data.image} className={style.profile_photo}></img>
               <div className={style.about}>
-                <div className={style.name}>{data.name}</div>
+                <div className={style.name}>{data.user_name}</div>
                 <div className={style.desc}>{data.desc}</div>
               </div>
 

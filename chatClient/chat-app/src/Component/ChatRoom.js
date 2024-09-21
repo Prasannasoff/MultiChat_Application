@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import Layout from './Layout';
 import style from '../styles/chatRoom.module.css'
+import { FaArrowRight } from 'react-icons/fa';
 const ChatApp = () => {
     const location = useLocation();
     const [publicMessages, setPublicMessages] = useState([]);
@@ -53,14 +54,7 @@ const ChatApp = () => {
         fetchDataAndConnect();
     }, [CurrentUser]);
 
-    const handleLogout = async () => {
-        if (id) {
-            const logoutResponse = await axios.put(`http://localhost:8081/api/userLogOutStatus/${id}`);
-            console.log(logoutResponse);
-            navigate('/');
-        }
 
-    }
 
     const handlePublicMessageSend = () => {
         sendPublicMessage({ senderName: CurrentUser, message });
@@ -70,7 +64,7 @@ const ChatApp = () => {
     const handlePrivateMessageSend = () => {
         const newMessage = {
             senderName: CurrentUser,
-            receiverName: privateRecipient,
+            receiverName: ContactName,
             message,
         };
 
@@ -110,13 +104,16 @@ const ChatApp = () => {
 
     return (
         <div className='mainCont'>
-            <Layout />
-            <div className={style.chatCont}>
-                <h1>Chat App</h1>
+            <Layout userDetail={UserDetail}/>
 
-                <h2>{CurrentUser}</h2>
+            <div className={style.chatCont}>
+                <div className={style.header}></div>
+
+                {/* <h1>Chat App</h1>
+            
+                <h2>{CurrentUser}</h2> */}
                 {/* <h2>Public Chat</h2> */}
-                <button onClick={handleLogout}>Logout</button>
+
                 {/* <div>
 
                     {publicMessages.map((msg, index) => (
@@ -132,51 +129,58 @@ const ChatApp = () => {
 
 
 
-                <div>
-                    {/* <h2>Private Chat</h2>
-                    <select
-                        value={privateRecipient}
-                        onChange={(e) => setPrivateRecipient(e.target.value)}
-                    >
-                        <option value="">Select Recipient</option> 
-                        {UserDetail.map(user => (
-                            <option key={user.id} value={user.user_name}>
-                                {user.user_name}
-                            </option>
-                        ))}
-                    </select> */}
 
-                    <div className={style.msgCont}>
-                        {previousChat.map((msg, index) => (
-                            msg.senderName == CurrentUser ? (
-                                <div key={index} className={style.senderOutCont}>
-                                    <div className={style.senderBox}>{msg.message}</div>
-                                </div>
 
-                            ) : (
+                <div className={style.msgCont}>
+                    {previousChat.map((msg, index) => (
+                        msg.senderName == CurrentUser ? (
+                            <div key={index} className={style.senderOutCont}>
+                                <div className={style.senderBox}>{msg.message}</div>
+                            </div>
 
-                                //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
-                                <div key={index} className={style.receiverOutCont}>
-                                    <div className={style.receiverBox}>{msg.message}</div>
-                                </div>
-                            )
-                            ))}
-                    </div>
+                        ) : (
+
+                            //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
+                            <div key={index} className={style.receiverOutCont}>
+                                <div className={style.receiverBox}>{msg.message}</div>
+                            </div>
+                        )
+                    ))}
+
                     {/* <div>{`${CurrentUser} to ${privateRecipient}: ${message}`}</div> */}
-                    <div>
-                        {privateMessages.map((msg, index) => (
-                            <div key={index}>{`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>
-                        ))}
-                    </div>
-                    <input
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                    />
-                    <button onClick={handlePrivateMessageSend}>Send Private Message</button>
-                    <div>  <button onClick={getMessage}>Get Message</button>
+
+                    {privateMessages.map((msg, index) => (
+                        msg.senderName == CurrentUser ? (
+                            <div key={index} className={style.senderOutCont}>
+                                <div className={style.senderBox}>{msg.message}</div>
+                            </div>
+
+                        ) : (
+
+                            //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
+                            <div key={index} className={style.receiverOutCont}>
+                                <div className={style.receiverBox}>{msg.message}</div>
+                            </div>
+                        )
+                    ))}
+                </div>
+
+                <div className={style.sendMsgCont}>
+                    <div className={style.msgInput}>
+                        <input
+                            type="text"
+                            placeholder='Type a message here'
+                            value={message}
+                            className={style.inputBox}
+                            onChange={(e) => setMessage(e.target.value)}
+                        />
+                        <div onClick={handlePrivateMessageSend} className={style.sendMsgBtn}><FaArrowRight /></div>
                     </div>
                 </div>
+
+                {/* <div>  <button onClick={getMessage}>Get Message</button>   </div>*/}
+
+
             </div>
         </div >
 

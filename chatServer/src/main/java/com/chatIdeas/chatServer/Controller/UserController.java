@@ -1,9 +1,12 @@
 package com.chatIdeas.chatServer.Controller;
 
 import com.chatIdeas.chatServer.Controller.model.Message;
+import com.chatIdeas.chatServer.DTO.AddFriendDTO;
 import com.chatIdeas.chatServer.Entity.ChatHistory;
+import com.chatIdeas.chatServer.Entity.FriendList;
 import com.chatIdeas.chatServer.Entity.MessageEntity;
 import com.chatIdeas.chatServer.Entity.UserDetails;
+import com.chatIdeas.chatServer.Repository.AddFriendRepo;
 import com.chatIdeas.chatServer.Repository.ChatHistoryRepo;
 import com.chatIdeas.chatServer.Repository.MessageRepository;
 import com.chatIdeas.chatServer.Repository.Repo;
@@ -149,4 +152,51 @@ public class UserController {
 //        return messageList;
 //
 //    }
+
+    @Autowired
+    private AddFriendRepo addFriendRepo;
+
+
+    @PostMapping("/addFriendRequest")
+    public String addFriendRequest(@RequestBody AddFriendDTO addFriendDTO) {
+        // Fetch the UserDetails for both the user and the friend using their IDs
+
+        // Create a new FriendList entry and set the status to "requested"
+        FriendList friendList = new FriendList(
+                addFriendDTO.getUser_id(),
+                addFriendDTO.getFriend_id(),
+                "requested");
+
+        // Save the friend request in the repository
+        addFriendRepo.save(friendList);
+
+        return "Request Sent successfully";
+    }
+
+
+
+        @PutMapping("/acceptRequest")
+        public String acceptRequest(@RequestParam int user_id, @RequestParam int friend_id){
+            FriendList friendList = addFriendRepo.findByUserAndFriend(user_id, friend_id);
+            friendList.setStatus("Accepted");
+            System.out.println(friendList);
+            addFriendRepo.save(friendList);
+            return "Friend request accepted successfully";
+        }
+
+    @PutMapping("/rejectRequest")
+    public String deleteRequest(@RequestParam int user_id, @RequestParam int friend_id){
+        FriendList friendList = addFriendRepo.findByUserAndFriend(user_id, friend_id);
+        friendList.setStatus("Rejected");
+        System.out.println(friendList);
+        addFriendRepo.save(friendList);
+        return "Friend request Rejected successfully";
+    }
+
+    @GetMapping("/getRequest/{user_id}")
+    public String getRequest(@PathVariable int user_id){
+        FriendList friendList= addFriendRepo.findByUserId(user_id);
+        return friendList.toString();
+
+    }
 }

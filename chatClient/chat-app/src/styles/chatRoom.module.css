@@ -1,33 +1,59 @@
 .chatCont {
-    background-color: rgb(26, 27, 35);
+    background: radial-gradient(circle at bottom right,
+            rgba(76, 87, 186, 0.502)5%,
+            /* Starting color (blue) */
+            rgba(35, 38, 58, 0.776)60%
+            /* Ending color (blackish) */
+        );
     width: 100%;
-    padding: 10px;
+
+    overflow-y: auto;
+    height: 100vh;
+
+}
+.header {
+    display: flex;
+    height: 10%;
+    width: 100%;
+    position: fixed;
+    top:0;
+    background-color: rgb(10, 11, 21);
+
+   
+
+}
+
+/* Hides the scrollbar in WebKit-based browsers (Chrome, Safari, etc.) */
+.chatCont::-webkit-scrollbar {
+    display: none;
+    /* Hides the scrollbar */
 }
 
 .senderOutCont {
     flex-direction: column;
     display: flex;
-
     align-items: end;
 
-
-
 }
-.msgCont{
+
+.msgCont {
+    padding:20px;
     display: flex;
     flex-direction: column;
-    gap:10px;
+    gap: 10px;
+    margin-top: 80px;
+    margin-bottom: 120px;
 }
 
 .senderBox {
     display: flex;
     align-items: center;
-    gap:10px;
+    gap: 10px;
     background-color: rgb(60, 134, 212);
     font-size: 20px;
     color: white;
     padding: 20px;
-    
+
     border-radius: 10px;
     font-weight: 500;
     font-family: Arial, Helvetica, sans-serif;
@@ -37,7 +63,7 @@
     flex-direction: column;
     display: flex;
     align-items: start;
-  
+
 
 
 }
@@ -45,7 +71,7 @@
 
 .receiverBox {
     display: flex;
-    align-items: center;  
+    align-items: center;
     background-color: rgb(43, 52, 59);
 
     font-size: 20px;
@@ -55,3 +81,47 @@
     font-weight: 500;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+.sendMsgCont {
+    width: 90%;
+    align-items: center;
+    bottom: 0;
+    position: fixed;
+    display: flex;
+    height: 8%;
+    bottom: 5px;
+    padding: 10px;
+}
+
+.msgInput {
+    display: flex;
+    height: 100%;
+    border-radius: 10px;
+    width: 80%;
+    align-items: center;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    color: white;
+    background-color: rgb(10, 11, 21);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    justify-content: space-between;
+
+}
+
+.inputBox {
+    width: 90%;
+}
+
+.sendMsgBtn {
+    display: flex;
+    border-radius: 500px;
+    height: 2rem;
+    width: 2rem;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(40, 68, 128);
+}
+
