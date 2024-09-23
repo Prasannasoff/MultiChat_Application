@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @EnableJpaRepositories
 @Repository
 public interface AddFriendRepo extends JpaRepository<FriendList,Integer> {
@@ -16,7 +18,8 @@ public interface AddFriendRepo extends JpaRepository<FriendList,Integer> {
     //WHERE u.user_id = :userId
     @Query("SELECT f FROM FriendList f WHERE f.user_id = :userId AND f.friend_id = :friendId")
     FriendList findByUserAndFriend(int userId, int friendId);
-    @Query("SELECT f FROM FriendList f WHERE f.user_id = :userId")
-    FriendList findByUserId(@Param("userId") int userId);
+
+    @Query("SELECT f FROM FriendList f WHERE f.friend_id = :friendId")
+    List<FriendList> findByFriendId(@Param("friendId") int friendId);
 
 }

@@ -4,11 +4,15 @@ import { connect, sendPublicMessage, sendPrivateMessage } from '../services/WebS
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Layout from './Layout';
 import style from '../styles/chatRoom.module.css'
 import { FaArrowRight } from 'react-icons/fa';
+
+import { setCurrentUser, clearCurrentUser } from '../redux/store';
+
 const ChatApp = () => {
+    const dispatch = useDispatch();
     const location = useLocation();
     const [publicMessages, setPublicMessages] = useState([]);
     const [privateMessages, setPrivateMessages] = useState([]);
@@ -32,6 +36,7 @@ const ChatApp = () => {
             console.log("userData:" + response.data);
             SetUserDetail(response.data);
             const user = response.data.filter(user => user.user_name === CurrentUser)[0];
+            dispatch(setCurrentUser({ user: user.user_name, id: user.user_id }));
             setId(user.user_id);
             const logInResponse = await axios.put(`http://localhost:8081/api/userLogInStatus/${user.user_id}`);
             console.log(logInResponse);
@@ -104,7 +109,7 @@ const ChatApp = () => {
 
     return (
         <div className='mainCont'>
-            <Layout userDetail={UserDetail}/>
+            <Layout userDetail={UserDetail} />
 
             <div className={style.chatCont}>
                 <div className={style.header}></div>

@@ -3,7 +3,12 @@ import style from '../styles/Layout.module.css';
 import { useState } from 'react';
 import { setUser, clearUser } from '../redux/store';
 import { useSelector, useDispatch } from 'react-redux';
-function Layout({userDetail}) {
+import { Tabs } from 'antd';
+import FriendRequest from './AddFriendRequest'
+import ResponseFriendRequest from './ResponseFriendRequest';
+function Layout({ userDetail }) {
+
+  const { TabPane } = Tabs
 
   const dispatch = useDispatch();
   const userName = useSelector(state => state.userName.user);
@@ -27,55 +32,64 @@ function Layout({userDetail}) {
 
 
   }
-    // const handleLogout = async () => {
-    //     if (id) {
-    //         const logoutResponse = await axios.put(`http://localhost:8081/api/userLogOutStatus/${id}`);
-    //         console.log(logoutResponse);
-    //         navigate('/');
-    //     }
+  // const handleLogout = async () => {
+  //     if (id) {
+  //         const logoutResponse = await axios.put(`http://localhost:8081/api/userLogOutStatus/${id}`);
+  //         console.log(logoutResponse);
+  //         navigate('/');
+  //     }
 
-    // }
+  // }
   return (
 
     <div className={style.LayoutCont}>
-      {/* <button onClick={handleLogout}>Logout</button> */}
-      <div className={style.searchBar}>
-        <input type="text" className='input' placeholder='Search Contacts'></input>
-      </div>
-      <div className={style.ContactName}>
-        {userDetail.map(data => {
-          const isActive = userName === data.user_name;;
-          return (
-            <div className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data.user_name)}>
-              <img src={data.image} className={style.profile_photo}></img>
+      <Tabs>
+        <TabPane tab="chatPage" key="1">
+
+
+          {/* <button onClick={handleLogout}>Logout</button> */}
+          <div className={style.searchBar}>
+            <input type="text" className='input' placeholder='Search Contacts'></input>
+          </div>
+          <div className={style.ContactName}>
+            {userDetail.map(data => {
+              const isActive = userName === data.user_name;;
+              return (
+                <div className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data.user_name)}>
+                  <img src={data.image} className={style.profile_photo}></img>
+                  <div className={style.about}>
+                    <div className={style.name}>{data.user_name}</div>
+                    <div className={style.desc}>{data.desc}</div>
+                  </div>
+
+                </div>
+              )
+            }
+            )}
+
+            <div className={style.PeopleKnow}>People You may know</div>
+
+            <div className={style.nameBanner}>
+              <img src={lst[0].image} className={style.profile_photo}></img>
               <div className={style.about}>
-                <div className={style.name}>{data.user_name}</div>
-                <div className={style.desc}>{data.desc}</div>
+                <div className={style.name}>Raj</div>
+                <div className={style.desc}>Hi</div>
               </div>
+              <div className={style.addBtn}>+</div>
 
             </div>
-          )
-        }
-        )}
+            <div className={style.selectedUser}>
+              {userName ? <p>Selected User: {userName}</p> : <p>No User Selected</p>}
+            </div>
 
-        <div className={style.PeopleKnow}>People You may know</div>
-
-        <div className={style.nameBanner}>
-          <img src={lst[0].image} className={style.profile_photo}></img>
-          <div className={style.about}>
-            <div className={style.name}>Raj</div>
-            <div className={style.desc}>Hi</div>
           </div>
-          <div className={style.addBtn}>+</div>
+        </TabPane>
+        <TabPane tab="FriendRequest" key="2"><FriendRequest userDetail={userDetail} /></TabPane>
+        <TabPane tab="FriendRequest" key="3"><ResponseFriendRequest userDetail={userDetail}/></TabPane>
 
-        </div>
-        <div className={style.selectedUser}>
-          {userName ? <p>Selected User: {userName}</p> : <p>No User Selected</p>}
-        </div>
-
-      </div>
-    </div>
+      </Tabs>
+    </div >
   )
 }
 
-export default Layout
+export default Layout;

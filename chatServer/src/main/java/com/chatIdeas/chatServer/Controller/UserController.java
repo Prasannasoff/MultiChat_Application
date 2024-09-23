@@ -12,6 +12,8 @@ import com.chatIdeas.chatServer.Repository.MessageRepository;
 import com.chatIdeas.chatServer.Repository.Repo;
 import com.chatIdeas.chatServer.Service.OfflineMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -193,10 +195,18 @@ public class UserController {
         return "Friend request Rejected successfully";
     }
 
-    @GetMapping("/getRequest/{user_id}")
-    public String getRequest(@PathVariable int user_id){
-        FriendList friendList= addFriendRepo.findByUserId(user_id);
-        return friendList.toString();
+    @GetMapping("/getRequest/{friend_id}")
+    public ResponseEntity getRequest(@PathVariable int friend_id) {
+        System.out.println("Fetching friend request for friend_id: " + friend_id);
+
+          List<FriendList> friendList = addFriendRepo.findByFriendId(friend_id);
+        if (friendList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body("Friend request not found for friend_id: " + friend_id);
+        }
+        System.out.println("Found friend request: " + friendList);
+        return ResponseEntity.status(HttpStatus.OK).body(friendList);
 
     }
+
 }
+
