@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import style from '../styles/ResponseFriendRequest.module.css'
 function ResponseFriendRequest({ userDetail }) {
     const [friendDetail, setFriendDetail] = useState([]);
+    const [response, setResponse] = useState(null);
 
     const friend_id = useSelector(state => state.currentUser.id);
     useEffect(() => {
@@ -24,13 +25,33 @@ function ResponseFriendRequest({ userDetail }) {
         }
         getRequest()
     }, [friend_id]);
+    const handleAccept = async (user_id) => {
+        const response = await axios.put(`http://localhost:8081/api/acceptRequest?user_id=${user_id}&friend_id=${friend_id}`);
+        setResponse("Accepted");
+        console.log(response.data);
+    }
+    const handleReject = async (user_id) => {
+        const response = await axios.put(`http://localhost:8081/api/rejectRequest?user_id=${user_id}&friend_id=${friend_id}`);
+        setResponse("Rejected");
+        console.log(response.data);
+    }
     return (
         <div className={style.responseFriendCont}>
 
             {friendDetail.map(data => {
                 return (
-                    <div>
-                        <div>{data.friend_name} has send you friend request</div>
+                    <div className={style.requestsCont}>
+                        <div className={style.friendName}>{data.friend_name}</div>
+
+                        {data.status == 'requested' ?
+                            <div className={style.responseBtn}>
+                                <div className={style.rejectBtn} onClick={() => handleReject(data.user_id)}>Reject</div>
+                                <div className={style.acceptBtn} onClick={() => handleAccept(data.user_id)}>Accept</div>
+
+                            </div>
+                            : <div>{data.status}</div>
+                        }
+
                         {/* <div>{data.user_id}</div> */}
                     </div>
 
