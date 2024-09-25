@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -201,7 +202,20 @@ public class UserController {
 
           List<FriendList> friendList = addFriendRepo.findByFriendId(friend_id);
         if (friendList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body("Friend request not found for friend_id: " + friend_id);
+            return ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList());
+        }
+        System.out.println("Found friend request: " + friendList);
+        return ResponseEntity.status(HttpStatus.OK).body(friendList);
+
+    }
+    @GetMapping("/getFriendList/{user_id}")
+    public ResponseEntity getFriendList(@PathVariable int user_id) {
+        System.out.println("Fetching friend request for friend_id: " + user_id);
+
+        List<FriendList> friendList = addFriendRepo.findByUserOrFriendId(user_id);
+
+        if (friendList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList());
         }
         System.out.println("Found friend request: " + friendList);
         return ResponseEntity.status(HttpStatus.OK).body(friendList);

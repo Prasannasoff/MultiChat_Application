@@ -61,7 +61,7 @@ private MessageRepository messageRepository;
     private Repo repo;
     private boolean checkUserOnline(String receiverName) {
         UserDetails user=repo.findByUserName(receiverName);
-        System.out.println("USerName"+user.isActive());
+        System.out.println("USerNameActive"+user.isActive());
         if(user.isActive()){
             return true;
         }

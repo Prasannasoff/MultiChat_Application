@@ -10,17 +10,20 @@ function ResponseFriendRequest({ userDetail }) {
     useEffect(() => {
         const getRequest = async () => {
             const response = await axios.get(`http://localhost:8081/api/getRequest/${friend_id}`);
-            console.log(response.data);
-            const enrichedDetails = response.data.map(friendRequest => {
-                const friend = userDetail.find(user => user.user_id === friendRequest.user_id);
+            console.log("FriendList" + response.data);
+            if (response.data.length > 0) {
+                const enrichedDetails = response.data.map(friendRequest => {
+                    const friend = userDetail.find(user => user.user_id === friendRequest.user_id);
 
-                return {
-                    ...friendRequest,
-                    friend_name: friend.user_name
-                };
-            });
+                    return {
+                        ...friendRequest,
+                        friend_name: friend.user_name
+                    };
+                });
+                setFriendDetail(enrichedDetails);
+            }
 
-            setFriendDetail(enrichedDetails);
+
 
         }
         getRequest()

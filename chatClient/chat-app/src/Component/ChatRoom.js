@@ -25,23 +25,17 @@ const ChatApp = () => {
     const CurrentUser = location.state;
     const navigate = useNavigate();
     const ContactName = useSelector(state => state.userName.user);
-
-
+    console.log("ID:" + CurrentUser.id);
+    dispatch(setCurrentUser({ user: CurrentUser.name, id: CurrentUser.id }));
     console.log("Data:" + CurrentUser);
 
     useEffect(() => {
         const fetchDataAndConnect = async () => {
-
-            const response = await axios.get("http://localhost:8081/api/getData");
-            console.log("userData:" + response.data);
-            SetUserDetail(response.data);
-            const user = response.data.filter(user => user.user_name === CurrentUser)[0];
-            dispatch(setCurrentUser({ user: user.user_name, id: user.user_id }));
-            setId(user.user_id);
-            const logInResponse = await axios.put(`http://localhost:8081/api/userLogInStatus/${user.user_id}`);
+            const user_id = CurrentUser.id;
+            const logInResponse = await axios.put(`http://localhost:8081/api/userLogInStatus/${user_id}`);
             console.log(logInResponse);
             const webSocketConnection = connect(
-                CurrentUser,
+                CurrentUser.name,
                 (msg) => setPublicMessages((prev) => [...prev, msg]),
                 (msg) => setPrivateMessages((prev) => [...prev, msg])
             );
@@ -57,18 +51,18 @@ const ChatApp = () => {
         };
 
         fetchDataAndConnect();
-    }, [CurrentUser]);
+    }, []);
 
 
 
     const handlePublicMessageSend = () => {
-        sendPublicMessage({ senderName: CurrentUser, message });
+        sendPublicMessage({ senderName: CurrentUser.name, message });
         setMessage('');
     };
 
     const handlePrivateMessageSend = () => {
         const newMessage = {
-            senderName: CurrentUser,
+            senderName: CurrentUser.name,
             receiverName: ContactName,
             message,
         };
@@ -84,7 +78,7 @@ const ChatApp = () => {
 
     };
     const getMessage = async () => {
-        const messageResponse = await axios.post(`http://localhost:8081/api/user-connected/${CurrentUser}`); //TO get the offline messages
+        const messageResponse = await axios.post(`http://localhost:8081/api/user-connected/${CurrentUser.name}`); //TO get the offline messages
         console.log("New messages" + messageResponse.data);
         if (messageResponse.data) {
             // Assuming the data is in the expected format
@@ -95,7 +89,7 @@ const ChatApp = () => {
     }
     useEffect(() => {
         const fetchPreviousChatsForContact = async () => {
-            const PreviousMsg = await axios.get(`http://localhost:8081/api/getChatHistory/${CurrentUser}`);
+            const PreviousMsg = await axios.get(`http://localhost:8081/api/getChatHistory/${CurrentUser.name}`);
             if (ContactName) {
                 setPreviousChat(PreviousMsg.data.filter(data => data.receiverName === ContactName || data.senderName === ContactName));
             }
@@ -104,12 +98,12 @@ const ChatApp = () => {
 
 
         fetchPreviousChatsForContact();
-    }, [ContactName, CurrentUser]);
+    }, [ContactName, CurrentUser.name]);
 
 
     return (
         <div className='mainCont'>
-            <Layout userDetail={UserDetail} />
+            <Layout />
 
             <div className={style.chatCont}>
                 <div className={style.header}></div>
@@ -138,7 +132,7 @@ const ChatApp = () => {
 
                 <div className={style.msgCont}>
                     {previousChat.map((msg, index) => (
-                        msg.senderName == CurrentUser ? (
+                        msg.senderName == CurrentUser.name ? (
                             <div key={index} className={style.senderOutCont}>
                                 <div className={style.senderBox}>{msg.message}</div>
                             </div>
@@ -155,7 +149,7 @@ const ChatApp = () => {
                     {/* <div>{`${CurrentUser} to ${privateRecipient}: ${message}`}</div> */}
 
                     {privateMessages.map((msg, index) => (
-                        msg.senderName == CurrentUser ? (
+                        msg.senderName == CurrentUser.name ? (
                             <div key={index} className={style.senderOutCont}>
                                 <div className={style.senderBox}>{msg.message}</div>
                             </div>

@@ -1,18 +1,58 @@
 import React from 'react'
 import style from '../styles/Layout.module.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { setUser, clearUser } from '../redux/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { Tabs } from 'antd';
 import FriendRequest from './AddFriendRequest'
 import ResponseFriendRequest from './ResponseFriendRequest';
-function Layout({ userDetail }) {
+import axios from 'axios';
+
+function Layout() {
 
   const { TabPane } = Tabs
 
   const dispatch = useDispatch();
   const userName = useSelector(state => state.userName.user);
+  const user_id = useSelector(state => state.currentUser.id);
+  const currentUserName = useSelector(state => state.currentUser.user);
+  const [friendDetail, setFriendDetail] = useState([]);
+  const [userDetail, SetUserDetail] = useState([]);
+  useEffect(() => {
+    // const user = response.data.filter(user => user.user_name === CurrentUser)[0];
+    // dispatch(setCurrentUser({ user: user.user_name, id: user.user_id }));
+    // setId(user.user_id);
+    const getRequest = async () => {
+      const getResponse = await axios.get("http://localhost:8081/api/getData");
+      console.log("userDatas:" + getResponse.data);
+      SetUserDetail(getResponse.data);
+      const response = await axios.get(`http://localhost:8081/api/getFriendList/${user_id}`);
+      console.log(response.data);
 
+      const enrichedDetails = response.data.map(friendList => {
+        const friend = getResponse.data.find(user => user.user_id === friendList.user_id);
+        const friend2 = getResponse.data.find(user => user.user_id === friendList.friend_id);
+        let friend_name;
+        if (currentUserName !== friend.user_name) {
+          friend_name = friend.user_name;
+        } else if (currentUserName !== friend2.user_name) {
+          friend_name = friend2.user_name;
+        }
+        console.log("Friend" + friend);
+
+        return {
+          ...friendList,
+          friend_name: friend_name
+        };
+      });
+
+      setFriendDetail(enrichedDetails);
+
+    }
+
+    getRequest()
+
+  }, [user_id]);
   const lst = [{
     name: 'Prasanna',
     image: "https://st4.depositphotos.com/10313122/22093/i/450/depositphotos_220936114-stock-photo-young-handsome-indian-man-against.jpg",
@@ -52,13 +92,13 @@ function Layout({ userDetail }) {
             <input type="text" className='input' placeholder='Search Contacts'></input>
           </div>
           <div className={style.ContactName}>
-            {userDetail.map(data => {
-              const isActive = userName === data.user_name;;
+            {friendDetail.map(data => {
+              const isActive = userName === data.friend_name;
               return (
-                <div className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data.user_name)}>
+                <div className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data.friend_name)}>
                   <img src={data.image} className={style.profile_photo}></img>
                   <div className={style.about}>
-                    <div className={style.name}>{data.user_name}</div>
+                    <div className={style.name}>{data.friend_name}</div>
                     <div className={style.desc}>{data.desc}</div>
                   </div>
 
@@ -85,7 +125,7 @@ function Layout({ userDetail }) {
           </div>
         </TabPane>
         <TabPane tab="FriendRequest" key="2"><FriendRequest userDetail={userDetail} /></TabPane>
-        <TabPane tab="FriendRequest" key="3"><ResponseFriendRequest userDetail={userDetail}/></TabPane>
+        <TabPane tab="FriendRequest" key="3"><ResponseFriendRequest userDetail={userDetail} /></TabPane>
 
       </Tabs>
     </div >

@@ -12,13 +12,12 @@ public class FriendList {
 
     @Column(name = "user_id") // The current user
     private int user_id;
-
-
     @Column(name = "friend_id") // The friend's user ID (also from UserDetails)
     private int friend_id;
 
     @Column(name = "status", length = 10) // Can store 'accepted' or 'rejected'
     private String status;
+
 
     // Constructors
 
