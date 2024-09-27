@@ -25,17 +25,17 @@ const ChatApp = () => {
     const CurrentUser = location.state;
     const navigate = useNavigate();
     const ContactName = useSelector(state => state.userName.user);
-    console.log("ID:" + CurrentUser.id);
-    dispatch(setCurrentUser({ user: CurrentUser.name, id: CurrentUser.id }));
+    console.log("ID:" + CurrentUser.user_id);
+    dispatch(setCurrentUser({ user: CurrentUser.user_name, id: CurrentUser.user_id }));
     console.log("Data:" + CurrentUser);
 
     useEffect(() => {
         const fetchDataAndConnect = async () => {
-            const user_id = CurrentUser.id;
+            const user_id = CurrentUser.user_id;
             const logInResponse = await axios.put(`http://localhost:8081/api/userLogInStatus/${user_id}`);
             console.log(logInResponse);
             const webSocketConnection = connect(
-                CurrentUser.name,
+                CurrentUser.user_name,
                 (msg) => setPublicMessages((prev) => [...prev, msg]),
                 (msg) => setPrivateMessages((prev) => [...prev, msg])
             );
@@ -56,13 +56,13 @@ const ChatApp = () => {
 
 
     const handlePublicMessageSend = () => {
-        sendPublicMessage({ senderName: CurrentUser.name, message });
+        sendPublicMessage({ senderName: CurrentUser.user_name, message });
         setMessage('');
     };
 
     const handlePrivateMessageSend = () => {
         const newMessage = {
-            senderName: CurrentUser.name,
+            senderName: CurrentUser.user_name,
             receiverName: ContactName,
             message,
         };
@@ -78,7 +78,7 @@ const ChatApp = () => {
 
     };
     const getMessage = async () => {
-        const messageResponse = await axios.post(`http://localhost:8081/api/user-connected/${CurrentUser.name}`); //TO get the offline messages
+        const messageResponse = await axios.post(`http://localhost:8081/api/user-connected/${CurrentUser.user_name}`); //TO get the offline messages
         console.log("New messages" + messageResponse.data);
         if (messageResponse.data) {
             // Assuming the data is in the expected format
@@ -89,7 +89,7 @@ const ChatApp = () => {
     }
     useEffect(() => {
         const fetchPreviousChatsForContact = async () => {
-            const PreviousMsg = await axios.get(`http://localhost:8081/api/getChatHistory/${CurrentUser.name}`);
+            const PreviousMsg = await axios.get(`http://localhost:8081/api/getChatHistory/${CurrentUser.user_name}`);
             if (ContactName) {
                 setPreviousChat(PreviousMsg.data.filter(data => data.receiverName === ContactName || data.senderName === ContactName));
             }
@@ -98,7 +98,7 @@ const ChatApp = () => {
 
 
         fetchPreviousChatsForContact();
-    }, [ContactName, CurrentUser.name]);
+    }, [ContactName, CurrentUser.user_name]);
 
 
     return (
@@ -132,7 +132,7 @@ const ChatApp = () => {
 
                 <div className={style.msgCont}>
                     {previousChat.map((msg, index) => (
-                        msg.senderName == CurrentUser.name ? (
+                        msg.senderName == CurrentUser.user_name ? (
                             <div key={index} className={style.senderOutCont}>
                                 <div className={style.senderBox}>{msg.message}</div>
                             </div>
@@ -149,7 +149,7 @@ const ChatApp = () => {
                     {/* <div>{`${CurrentUser} to ${privateRecipient}: ${message}`}</div> */}
 
                     {privateMessages.map((msg, index) => (
-                        msg.senderName == CurrentUser.name ? (
+                        msg.senderName == CurrentUser.user_name ? (
                             <div key={index} className={style.senderOutCont}>
                                 <div className={style.senderBox}>{msg.message}</div>
                             </div>

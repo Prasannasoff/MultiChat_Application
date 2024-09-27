@@ -11,6 +11,7 @@ import com.chatIdeas.chatServer.Repository.ChatHistoryRepo;
 import com.chatIdeas.chatServer.Repository.MessageRepository;
 import com.chatIdeas.chatServer.Repository.Repo;
 import com.chatIdeas.chatServer.Service.OfflineMessageService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,11 @@ public class UserController {
 
         return "User Saved Successfully";
 
+    }
+    @GetMapping("/getCurrentUser/{user_name}")
+    public UserDetails getCurrentUser(@PathVariable String user_name){
+        UserDetails currentUser=repo.findByUserName(user_name);
+        return currentUser;
     }
 
     @GetMapping("/getData")
