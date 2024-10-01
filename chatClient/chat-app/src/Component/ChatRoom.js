@@ -25,10 +25,10 @@ const ChatApp = () => {
     const CurrentUser = location.state;
     const navigate = useNavigate();
     const ContactName = useSelector(state => state.userName.user);
-    console.log("ID:" + CurrentUser.user_id);
-    dispatch(setCurrentUser({ user: CurrentUser.user_name, id: CurrentUser.user_id }));
-    console.log("Data:" + CurrentUser);
-
+    console.log("Length:" + publicMessages.length);
+    useEffect(() => {
+        dispatch(setCurrentUser({ user: CurrentUser.user_name, id: CurrentUser.user_id }));
+    }, [dispatch, CurrentUser]);
     useEffect(() => {
         const fetchDataAndConnect = async () => {
             const user_id = CurrentUser.user_id;
@@ -57,6 +57,7 @@ const ChatApp = () => {
 
     const handlePublicMessageSend = () => {
         sendPublicMessage({ senderName: CurrentUser.user_name, message });
+        console.log("Message send" + message);
         setMessage('');
     };
 
@@ -112,75 +113,105 @@ const ChatApp = () => {
             
                 <h2>{CurrentUser}</h2> */}
                 {/* <h2>Public Chat</h2> */}
+                {ContactName == "GroupChat" ?
+                    (
 
-                {/* <div>
+                        <div>
+                            <div className={style.sample}>
 
-                    {publicMessages.map((msg, index) => (
-                        <div key={index}>{`${msg.senderName}: ${msg.message}`}</div>
-                    ))}
-                </div>
-                <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                />
-                <button onClick={handlePublicMessageSend}>Send Public Message</button> */}
+                                {publicMessages.map((msg, index) => (
+                                    <div key={index}>{`${msg.senderName}: ${msg.message}`}</div>
+                                ))}
+                                {/* <div className={style.msgCont}>
+                                    {publicMessages.map((msg, index) => (
+                                        msg.senderName == CurrentUser.user_name ? (
+                                            <div key={index} className={style.senderOutCont}>
+                                                <div className={style.senderBox}>{msg.message}</div>
+                                            </div>
 
+                                        ) : (
 
-
-
-
-                <div className={style.msgCont}>
-                    {previousChat.map((msg, index) => (
-                        msg.senderName == CurrentUser.user_name ? (
-                            <div key={index} className={style.senderOutCont}>
-                                <div className={style.senderBox}>{msg.message}</div>
+                                            //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
+                                            <div key={index} className={style.receiverOutCont}>
+                                                <div key={index}>{`${msg.senderName}: ${msg.message}`}</div>
+                                            </div>
+                                        )
+                                    ))}
+                                </div> */}
+                            </div>
+                            <div className={style.sendMsgCont}>
+                                <div className={style.msgInput}>
+                                    <input
+                                        type="text"
+                                        placeholder='Type a message here'
+                                        value={message}
+                                        className={style.inputBox}
+                                        onChange={(e) => setMessage(e.target.value)}
+                                    />
+                                    <div onClick={handlePublicMessageSend} className={style.sendMsgBtn}><FaArrowRight /></div>
+                                </div>
                             </div>
 
-                        ) : (
 
-                            //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
-                            <div key={index} className={style.receiverOutCont}>
-                                <div className={style.receiverBox}>{msg.message}</div>
+
+                        </div>
+                    ) :
+
+                    <div>
+
+                        <div className={style.msgCont}>
+                            {previousChat.map((msg, index) => (
+                                msg.senderName == CurrentUser.user_name ? (
+                                    <div key={index} className={style.senderOutCont}>
+                                        <div className={style.senderBox}>{msg.message}</div>
+                                    </div>
+
+                                ) : (
+
+                                    //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
+                                    <div key={index} className={style.receiverOutCont}>
+                                        <div className={style.receiverBox}>{msg.message}</div>
+                                    </div>
+                                )
+                            ))}
+
+                            {/* <div>{`${CurrentUser} to ${privateRecipient}: ${message}`}</div> */}
+
+                            {privateMessages.map((msg, index) => (
+                                msg.senderName == CurrentUser.user_name ? (
+                                    <div key={index} className={style.senderOutCont}>
+                                        <div className={style.senderBox}>{msg.message}</div>
+                                    </div>
+
+                                ) : (
+
+                                    //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
+                                    <div key={index} className={style.receiverOutCont}>
+                                        <div className={style.receiverBox}>{msg.message}</div>
+                                    </div>
+                                )
+                            ))}
+                        </div>
+
+                        <div className={style.sendMsgCont}>
+                            <div className={style.msgInput}>
+                                <input
+                                    type="text"
+                                    placeholder='Type a message here'
+                                    value={message}
+                                    className={style.inputBox}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                />
+                                <div onClick={handlePrivateMessageSend} className={style.sendMsgBtn}><FaArrowRight /></div>
                             </div>
-                        )
-                    ))}
+                        </div>
 
-                    {/* <div>{`${CurrentUser} to ${privateRecipient}: ${message}`}</div> */}
+                        {/* <div>  <button onClick={getMessage}>Get Message</button>   </div>*/}
 
-                    {privateMessages.map((msg, index) => (
-                        msg.senderName == CurrentUser.user_name ? (
-                            <div key={index} className={style.senderOutCont}>
-                                <div className={style.senderBox}>{msg.message}</div>
-                            </div>
-
-                        ) : (
-
-                            //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
-                            <div key={index} className={style.receiverOutCont}>
-                                <div className={style.receiverBox}>{msg.message}</div>
-                            </div>
-                        )
-                    ))}
-                </div>
-
-                <div className={style.sendMsgCont}>
-                    <div className={style.msgInput}>
-                        <input
-                            type="text"
-                            placeholder='Type a message here'
-                            value={message}
-                            className={style.inputBox}
-                            onChange={(e) => setMessage(e.target.value)}
-                        />
-                        <div onClick={handlePrivateMessageSend} className={style.sendMsgBtn}><FaArrowRight /></div>
                     </div>
-                </div>
-
-                {/* <div>  <button onClick={getMessage}>Get Message</button>   </div>*/}
-
-
+                }
             </div>
+
         </div >
 
     );

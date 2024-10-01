@@ -10,20 +10,21 @@ import FriendRequest from './AddFriendRequest'
 import ResponseFriendRequest from './ResponseFriendRequest';
 import axios from 'axios';
 
-function Layout() {
+const Layout = React.memo(() => {
 
   const { TabPane } = Tabs;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userName = useSelector(state => state.userName.user);
+
   const user_id = useSelector(state => state.currentUser.id);
   const currentUserName = useSelector(state => state.currentUser.user);
+  console.log("Hello")
   console.log("CurrentUser" + currentUserName);
   const [friendDetail, setFriendDetail] = useState([]);
   const [userDetail, setUserDetail] = useState([]);
   const [nonFriendList, setNonFriendList] = useState([]);
-
-  // Fetch data on component mount
+  const groupChat = "GroupChat"
   useEffect(() => {
     const fetchDetails = async () => {
       try {
@@ -62,13 +63,63 @@ function Layout() {
         } else {
           console.error("Data is missing or undefined.");
         }
+        // Fetching data logic
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    fetchDetails();
+    // Only fetch details when `user_id` and `currentUserName` are defined.
+    if (user_id && currentUserName) {
+      fetchDetails();
+    }
   }, [user_id, currentUserName]);
+  // Fetch data on component mount
+  // useEffect(() => {
+  //   const fetchDetails = async () => {
+  //     try {
+  //       const [getResponse, response] = await Promise.all([
+  //         axios.get("http://localhost:8081/api/getData"),
+  //         axios.get(`http://localhost:8081/api/getFriendList/${user_id}`)
+  //       ]);
+
+  //       const users = getResponse.data;
+  //       const friends = response.data;
+
+  //       // Make sure userDetail is not undefined or empty before proceeding
+  //       if (users && users.length > 0 && friends) {
+  //         setUserDetail(users);
+
+  //         // Filter out non-friends
+  //         const nonFriends = users.filter(user =>
+  //           !friends.some(friend => user.user_id === friend.user_id || user.user_id === friend.friend_id)
+  //         );
+  //         const nonFriendWithoutCurrentUser = nonFriends.filter(nonFriend => nonFriend.user_name !== currentUserName);
+  //         setNonFriendList(nonFriendWithoutCurrentUser);
+  //         console.log("List" + nonFriendWithoutCurrentUser);
+  //         // Enrich the friend list with names
+  //         const enrichedDetails = friends.map(friendList => {
+  //           const friend = users.find(user => user.user_id === friendList.user_id);
+  //           const friend2 = users.find(user => user.user_id === friendList.friend_id);
+  //           let friend_name = currentUserName !== friend?.user_name ? friend?.user_name : friend2?.user_name;
+
+  //           return {
+  //             ...friendList,
+  //             friend_name: friend_name || 'Unknown' // Handle undefined friend_name
+  //           };
+  //         });
+
+  //         setFriendDetail(enrichedDetails);
+  //       } else {
+  //         console.error("Data is missing or undefined.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchDetails();
+  // }, [user_id, currentUserName]);
   const lst = [{
     name: 'Prasanna',
     image: "https://st4.depositphotos.com/10313122/22093/i/450/depositphotos_220936114-stock-photo-young-handsome-indian-man-against.jpg",
@@ -108,6 +159,15 @@ function Layout() {
             <input type="text" className='input' placeholder='Search Contacts'></input>
           </div>
           <div className={style.ContactName}>
+
+            <div className={`${userName == groupChat ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(groupChat)}>
+              <img src={lst[1].image} className={style.profile_photo}></img>
+              <div className={style.about}>
+                <div className={style.name}>{groupChat}</div>
+                {/* <div className={style.desc}>{data.desc}</div> */}
+              </div>
+
+            </div>
             {friendDetail.map(data => {
               const isActive = userName === data.friend_name;
               return (
@@ -146,6 +206,8 @@ function Layout() {
       </Tabs>
     </div >
   )
+
 }
+)
 
 export default Layout;

@@ -6,12 +6,13 @@ import LoginPage from './Component/LoginPage'
 import RegisterPage from './Component/RegisterPage';
 import { Provider } from 'react-redux';
 import store from './redux/store';
-
+import Layout from './Component/Layout';
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
+     
 
           <Route path='/' element={<LoginPage />} />
           <Route path='/publicChat' element={<ChatRoom />} />
