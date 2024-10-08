@@ -26,6 +26,8 @@ public class ChatController {
     @MessageMapping("/message") //When a message with the destination /app/message is received that is config will send this to here whenever client send a request to server, the @MessageMapping("/message") annotation tells Spring to route this message to the receivePublicMessage method in the ChatController.
     @SendTo("/chatroom/public") //This annotation specifies that the return value of the receivePublicMessage method should be sent to the destination /chatroom/public
     public Message receivePublicMessage(@Payload Message message){
+
+
         //When a WebSocket client sends a message to the server, the message typically includes a body(such as a JSON object).The @Payload annotation is used in the method parameter to automatically convert and inject this message payload into the method parameter.It simply converts the json object into varaibles specified in message method
         return message;
     }

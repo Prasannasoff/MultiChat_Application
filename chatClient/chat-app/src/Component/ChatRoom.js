@@ -25,7 +25,7 @@ const ChatApp = () => {
     const CurrentUser = location.state;
     const navigate = useNavigate();
     const ContactName = useSelector(state => state.userName.user);
-    console.log("Length:" + publicMessages.length);
+
     useEffect(() => {
         dispatch(setCurrentUser({ user: CurrentUser.user_name, id: CurrentUser.user_id }));
     }, [dispatch, CurrentUser]);
@@ -36,7 +36,13 @@ const ChatApp = () => {
             console.log(logInResponse);
             const webSocketConnection = connect(
                 CurrentUser.user_name,
-                (msg) => setPublicMessages((prev) => [...prev, msg]),
+                (msg) => {
+                    setPublicMessages((prevMessages) => {
+                        // Log to ensure messages are updating correctly
+                        console.log("Received public message: ", msg);
+                        return [...prevMessages, msg];
+                    });
+                },
                 (msg) => setPrivateMessages((prev) => [...prev, msg])
             );
 
@@ -51,13 +57,14 @@ const ChatApp = () => {
         };
 
         fetchDataAndConnect();
-    }, []);
+    }, [CurrentUser.user_name]);
 
-
+    useEffect(() => {
+        console.log("Public messages length: ", publicMessages.length);
+    }, [publicMessages]);
 
     const handlePublicMessageSend = () => {
         sendPublicMessage({ senderName: CurrentUser.user_name, message });
-        console.log("Message send" + message);
         setMessage('');
     };
 
@@ -113,31 +120,28 @@ const ChatApp = () => {
             
                 <h2>{CurrentUser}</h2> */}
                 {/* <h2>Public Chat</h2> */}
-                {ContactName == "GroupChat" ?
+                {ContactName === "GroupChat" ?
                     (
 
                         <div>
-                            <div className={style.sample}>
 
+                            <div className={style.msgCont}>
                                 {publicMessages.map((msg, index) => (
-                                    <div key={index}>{`${msg.senderName}: ${msg.message}`}</div>
+                                    console.log(`Rendering message from ${msg.senderName}: ${msg.message}`),
+                                    msg.senderName == CurrentUser.user_name ? (
+                                        <div key={index} className={style.senderOutCont}>
+                                            <div className={style.senderBox}>{msg.message}</div>
+                                        </div>
+
+                                    ) : (
+
+                                        //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
+                                        <div key={index} className={style.receiverOutCont}>
+                                            <div className={style.receiverBox}key={index}>{`${msg.senderName}: ${msg.message}`}</div>
+                                        </div>
+                                    )
                                 ))}
-                                {/* <div className={style.msgCont}>
-                                    {publicMessages.map((msg, index) => (
-                                        msg.senderName == CurrentUser.user_name ? (
-                                            <div key={index} className={style.senderOutCont}>
-                                                <div className={style.senderBox}>{msg.message}</div>
-                                            </div>
-
-                                        ) : (
-
-                                            //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
-                                            <div key={index} className={style.receiverOutCont}>
-                                                <div key={index}>{`${msg.senderName}: ${msg.message}`}</div>
-                                            </div>
-                                        )
-                                    ))}
-                                </div> */}
+                                {/* </div> */}
                             </div>
                             <div className={style.sendMsgCont}>
                                 <div className={style.msgInput}>

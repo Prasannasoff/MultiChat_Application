@@ -6,32 +6,35 @@ const WEBSOCKET_URL = 'http://localhost:8081/ws';
 
 let stompClient = null;
 
+let isSubscribed = false;
+
 export const connect = (CurrentUser, onMessageReceived, onPrivateMessageReceived) => {
-  const socket = new SockJS(WEBSOCKET_URL);
+  if (!isSubscribed) {
+    const socket = new SockJS(WEBSOCKET_URL);
+    stompClient = new Client({
+      webSocketFactory: () => socket,
+      onConnect: () => {
+        if (!isSubscribed) {
+          stompClient.subscribe('/chatroom/public', (message) => {
+            onMessageReceived(JSON.parse(message.body));
+          });
 
-  stompClient = new Client({
-    webSocketFactory: () => socket,
-    connectHeaders: {},
-    debug: (str) => console.log(str),
-    onConnect: () => {
-      stompClient.subscribe('/chatroom/public', (message) => {
-        onMessageReceived(JSON.parse(message.body));
-      });
+          stompClient.subscribe(`/user/${CurrentUser}/queue/private`, (message) => {
+            onPrivateMessageReceived(JSON.parse(message.body));
+          });
 
-      stompClient.subscribe(`/user/${CurrentUser}/queue/private`, (message) => {
-        onPrivateMessageReceived(JSON.parse(message.body));
-      });
+          isSubscribed = true;  // Mark as subscribed
+        }
+      },
+      onStompError: (frame) => {
+        console.error('STOMP error:', frame);
+      },
+    });
 
-      // Fetch missed messages via an API call
-
-    },
-    onStompError: (frame) => {
-      console.error('STOMP error:', frame);
-    },
-  });
-
-  stompClient.activate();
+    stompClient.activate();
+  }
 };
+
 
 export const sendPublicMessage = (message) => {
   stompClient.publish({
