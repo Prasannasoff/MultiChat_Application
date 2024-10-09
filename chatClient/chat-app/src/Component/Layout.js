@@ -58,8 +58,15 @@ const Layout = React.memo(() => {
               friend_name: friend_name || 'Unknown' // Handle undefined friend_name
             };
           });
-
-          setFriendDetail(enrichedDetails);
+          const friendNames = enrichedDetails.map(detail => detail.friend_name);
+     
+          const filteredUsers = users.filter(user => {
+            const isFriend = friendNames.includes(user.user_name); // Check if the user's name is in the friend names
+        
+            return isFriend;
+          });
+     
+          setFriendDetail(filteredUsers);
         } else {
           console.error("Data is missing or undefined.");
         }
@@ -172,16 +179,20 @@ const Layout = React.memo(() => {
               const isActive = userName === data.friend_name;
               return (
                 <div className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data.friend_name)}>
-                  <img src={data.image} className={style.profile_photo}></img>
+                  {/* Check if the image is a base64 string or a URL */}
+                  <img
+                    src={data.image && data.image.startsWith('data:image/') ? data.image : `data:image/jpeg;base64,${data.image}`}
+                    className={style.profile_photo}
+                    alt={`${data.user_name}'s profile`}
+                  />
                   <div className={style.about}>
-                    <div className={style.name}>{data.friend_name}</div>
-                    <div className={style.desc}>{data.desc}</div>
+                    <div className={style.name}>{data.user_name}</div>
+                    <div className={style.desc}>{data.about}</div>
                   </div>
-
                 </div>
-              )
-            }
-            )}
+              );
+            })}
+
 
             <div className={style.PeopleKnow}>People You may know</div>
 

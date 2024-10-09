@@ -1,4 +1,5 @@
 package com.chatIdeas.chatServer.Controller;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.chatIdeas.chatServer.Controller.model.Message;
 import com.chatIdeas.chatServer.DTO.AddFriendDTO;
@@ -33,13 +34,34 @@ public class UserController {
     private MessageRepository messageRepository;
 
     @PostMapping("/save")
-    public String saveUser(@RequestBody UserDetails user) {
+    public String saveUser(
+            @RequestParam("user_name") String userName,
+            @RequestParam("about") String about,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("phone") String phone,
+            @RequestParam("image") MultipartFile image) {
 
-        repo.save(user);
+        try {
+            // Convert the uploaded image into byte array
+            byte[] imageBytes = image.getBytes();
 
+            // Create a new UserDetails object and set the fields
+            UserDetails user = new UserDetails();
+            user.setUser_name(userName);
+            user.setAbout(about);
+            user.setEmail(email);
+            user.setPassword(password);
+            user.setPhone_number(phone);
+            user.setImage(imageBytes);  // Set the image data
 
-        return "User Saved Successfully";
+            // Save the user object to the database
+            repo.save(user);
 
+            return "User Saved Successfully";
+        } catch (Exception e) {
+            return "Error saving user: " + e.getMessage();
+        }
     }
     @GetMapping("/getCurrentUser/{user_name}")
     public UserDetails getCurrentUser(@PathVariable String user_name){
