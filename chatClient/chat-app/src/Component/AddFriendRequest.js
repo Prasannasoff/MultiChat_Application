@@ -18,7 +18,11 @@ function AddFriendRequest({ nonFriendList }) {
             {nonFriendList.map(data => {
                 return (
                     <div className={style.nameBanner}>
-                        <img src={data.image} className={style.profile_photo}></img>
+                        <img
+                            src={data.image && data.image.startsWith('data:image/') ? data.image : `data:image/jpeg;base64,${data.image}`}
+                            className={style.profile_photo}
+                            alt={`${data.user_name}'s profile`}
+                        />
                         <div className={style.about}>
                             <div className={style.name}>{data.user_name}</div>
                             {/* <div className={style.desc}>Hi</div> */}

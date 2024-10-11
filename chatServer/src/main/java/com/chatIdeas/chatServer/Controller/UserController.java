@@ -72,6 +72,7 @@ public class UserController {
     @GetMapping("/getData")
 
     public List<UserDetails> getDetails() {
+        System.out.print("List:"+repo.findAll());
         return repo.findAll();
 
     }

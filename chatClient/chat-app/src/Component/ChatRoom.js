@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Layout from './Layout';
 import style from '../styles/chatRoom.module.css'
 import { FaArrowRight } from 'react-icons/fa';
-
+import Navigation from './Navigation';
 import { setCurrentUser, clearCurrentUser } from '../redux/store';
 
 const ChatApp = () => {
@@ -24,7 +24,27 @@ const ChatApp = () => {
     const [msgSend, setMsgSend] = useState(false);
     const CurrentUser = location.state;
     const navigate = useNavigate();
-    const ContactName = useSelector(state => state.userName.user);
+    // const ContactName = useSelector(state => state.userName.user);
+    const ContactDetails = useSelector(state => {
+        // Check if `userName.user` is the group chat or a user object
+        if (state.userName.user === "GroupChat") {
+            return "GroupChat"; // If it's a group chat, return the group chat name
+        } else if (state.userName.user && state.userName.user.user_name) {
+            return state.userName.user; // Return the user_name if it exists
+        } else {
+            return null; // Return null if neither case is valid
+        }
+    });
+    const ContactName = useSelector(state => {
+        // Check if `userName.user` is the group chat or a user object
+        if (state.userName.user === "GroupChat") {
+            return "GroupChat"; // If it's a group chat, return the group chat name
+        } else if (state.userName.user && state.userName.user.user_name) {
+            return state.userName.user.user_name; // Return the user_name if it exists
+        } else {
+            return null; // Return null if neither case is valid
+        }
+    });
 
     useEffect(() => {
         dispatch(setCurrentUser({ user: CurrentUser.user_name, id: CurrentUser.user_id }));
@@ -111,14 +131,32 @@ const ChatApp = () => {
 
     return (
         <div className='mainCont'>
-            <Layout />
+            <Navigation />
 
             <div className={style.chatCont}>
-                <div className={style.header}></div>
+                <div className={style.header}>
+                    {ContactDetails ?
+                        <>
+                            <div className={style.headerDetails}>
+                                <img
+                                    src={ContactDetails.image && ContactDetails.image.startsWith('data:image/') ? ContactDetails.image : `data:image/jpeg;base64,${ContactDetails.image}`}
+                                    className={style.header_photo}
+                                    alt={`${ContactDetails.user_name}'s profile`}
+                                />
+                                <div className={style.headerMain}>
+                                    <div className={style.headerName}>{ContactDetails.user_name ? ContactDetails.user_name : ContactDetails}</div>
 
-                {/* <h1>Chat App</h1>
-            
-                <h2>{CurrentUser}</h2> */}
+                                    <div className={style.headerStatus}>{ContactDetails.active ? 'Online' : 'Offline'}</div>
+                                </div>
+                            </div>
+                        </>
+
+                        : <div>No user Selected</div>}
+                </div>
+
+
+
+
                 {/* <h2>Public Chat</h2> */}
                 {ContactName === "GroupChat" ?
                     (
@@ -137,7 +175,7 @@ const ChatApp = () => {
 
                                         //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
                                         <div key={index} className={style.receiverOutCont}>
-                                            <div className={style.receiverBox}key={index}>{`${msg.senderName}: ${msg.message}`}</div>
+                                            <div className={style.receiverBox} key={index}>{`${msg.senderName}: ${msg.message}`}</div>
                                         </div>
                                     )
                                 ))}
