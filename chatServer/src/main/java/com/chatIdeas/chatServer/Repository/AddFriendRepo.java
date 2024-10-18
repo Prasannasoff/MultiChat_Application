@@ -22,7 +22,7 @@ public interface AddFriendRepo extends JpaRepository<FriendList,Integer> {
     @Query("SELECT f FROM FriendList f WHERE f.friend_id = :friendId")
     List<FriendList> findByFriendId(@Param("friendId") int friendId);
 
-    @Query("SELECT f FROM FriendList f WHERE (f.friend_id = :userId OR f.user_id = :userId) AND f.status = 'accepted'")
+    @Query("SELECT f FROM FriendList f WHERE (f.friend_id = :userId OR f.user_id = :userId)")
     List<FriendList> findByUserOrFriendId(@Param("userId") int userId);
 
 }

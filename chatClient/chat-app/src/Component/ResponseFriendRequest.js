@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import style from '../styles/ResponseFriendRequest.module.css'
 function ResponseFriendRequest({ userDetail }) {
     const [friendDetail, setFriendDetail] = useState([]);
-    const [response, setResponse] = useState(null);
+    const [response, setResponse] = useState({});
 
     const friend_id = useSelector(state => state.currentUser.id);
     useEffect(() => {
@@ -30,12 +30,20 @@ function ResponseFriendRequest({ userDetail }) {
     }, [friend_id]);
     const handleAccept = async (user_id) => {
         const response = await axios.put(`http://localhost:8081/api/acceptRequest?user_id=${user_id}&friend_id=${friend_id}`);
-        setResponse("Accepted");
+
+        setResponse(prevState => ({
+            ...prevState,
+            [user_id]: "Accepted"   // Update only the clicked friend
+        }));
         console.log(response.data);
     }
     const handleReject = async (user_id) => {
         const response = await axios.put(`http://localhost:8081/api/rejectRequest?user_id=${user_id}&friend_id=${friend_id}`);
-        setResponse("Rejected");
+
+        setResponse(prevState => ({
+            ...prevState,
+            [user_id]: "Rejected"   // Update only the clicked friend
+        }));
         console.log(response.data);
     }
     return (
@@ -46,13 +54,15 @@ function ResponseFriendRequest({ userDetail }) {
                     <div className={style.requestsCont}>
                         <div className={style.friendName}>{data.friend_name}</div>
 
-                        {data.status == 'requested' ?
+                        {data.status == 'requested' && !response[data.user_id] ?
+
                             <div className={style.responseBtn}>
                                 <div className={style.rejectBtn} onClick={() => handleReject(data.user_id)}>Reject</div>
                                 <div className={style.acceptBtn} onClick={() => handleAccept(data.user_id)}>Accept</div>
 
                             </div>
-                            : <div>{data.status}</div>
+
+                            : <div>{data.status == 'requested' ? response[data.user_id] : data.status}</div>
                         }
 
                         {/* <div>{data.user_id}</div> */}

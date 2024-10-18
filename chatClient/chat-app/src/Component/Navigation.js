@@ -34,12 +34,8 @@ function Navigation() {
                     setUserDetail(users);
 
                     // Filter out non-friends
-                    const nonFriends = users.filter(user =>
-                        !friends.some(friend => user.user_id === friend.user_id || user.user_id === friend.friend_id)
-                    );
-                    const nonFriendWithoutCurrentUser = nonFriends.filter(nonFriend => nonFriend.user_name !== currentUserName);
-                    setNonFriendList(nonFriendWithoutCurrentUser);
-                    console.log("List: ", nonFriendWithoutCurrentUser);
+
+
 
                     // Enrich the friend list with names
                     const enrichedDetails = friends.map(friendList => {
@@ -58,8 +54,30 @@ function Navigation() {
                     const filteredUsers = users.filter(user => {
                         return friendNames.includes(user.user_name);
                     });
+                    const addFriendStatus = filteredUsers.map(filteredData => {
+                        const friend = friends.find(friend => filteredData.user_id === friend.user_id || filteredData.user_id === friend.friend_id);
+                        return {
+                            ...filteredData,
+                            status: friend ? friend.status : 'none'  // Add status if found, else 'none'
+                        };
+                    });
+                    const nonFriends = users.filter(user =>
+                        !friends.some(friend => user.user_id === friend.user_id || user.user_id === friend.friend_id)
+                    );
+                    const nonFriendWithoutCurrentUser = nonFriends.filter(nonFriend => nonFriend.user_name !== currentUserName);
+                    const nonFriendUpdated = nonFriendWithoutCurrentUser.map(data => {
+                        return {
+                            ...data,
+                            status: "none"
 
-                    setFriendDetail(filteredUsers);
+                        }   
+                    });
+
+                    const requestedFriendList = addFriendStatus.filter(friend => friend.status == 'requested');
+                    const combinedNonFriendList = [...nonFriendUpdated, ...requestedFriendList];
+                    setNonFriendList(combinedNonFriendList);
+                    console.log("List: ", combinedNonFriendList);
+                    setFriendDetail(addFriendStatus);
                 } else {
                     console.error("Data is missing or undefined.");
                 }
@@ -82,7 +100,7 @@ function Navigation() {
     return (
         <div className={style.LayoutCont}>
             <div className={style.logoutBtn}>
-            <button onClick={handleLogout} >Logout</button>
+                <button onClick={handleLogout} >Logout</button>
             </div>
             <div className={style.NavCont}>
                 <div className={style.NavigationMenu}>
