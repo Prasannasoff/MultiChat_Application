@@ -14,4 +14,7 @@ public interface Repo extends JpaRepository<UserDetails,Integer> {
 //    UserDetails findByUser_name(String user_name);  //SELECT * FROM user_details WHERE user_name = ?;
 @Query("SELECT u FROM UserDetails u WHERE u.user_name = :user_name")
 UserDetails findByUserName(@Param("user_name") String user_name);
+
+    @Query("SELECT u FROM UserDetails u WHERE u.email = :email")
+    UserDetails findByEmail(@Param("email") String email);
 }
