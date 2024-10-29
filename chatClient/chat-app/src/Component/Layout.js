@@ -109,3 +109,4 @@ const Layout = React.memo(({ friendDetail }) => {
 });
 
 export default Layout;
+

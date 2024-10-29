@@ -33,7 +33,7 @@ public class UserController {
     @Autowired
     private MessageRepository messageRepository;
 
-    @PostMapping("/save")
+    @PostMapping("/register")
     public String saveUser(
             @RequestParam("user_name") String userName,
             @RequestParam("about") String about,
@@ -63,9 +63,10 @@ public class UserController {
             return "Error saving user: " + e.getMessage();
         }
     }
-    @GetMapping("/getCurrentUser/{user_name}")
-    public UserDetails getCurrentUser(@PathVariable String user_name){
-        UserDetails currentUser=repo.findByUserName(user_name);
+    @GetMapping("/getCurrentUser/{email}")
+    public UserDetails getCurrentUser(@PathVariable String email){
+        UserDetails currentUser=repo.findByEmail(email);
+        System.out.println("CurrentUser"+currentUser);
         return currentUser;
     }
 

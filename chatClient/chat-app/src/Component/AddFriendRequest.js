@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import style from '../styles/FriendRequest.module.css';
 import { useSelector } from 'react-redux';
+import api from '../services/api';
+
 import axios from 'axios';
 function AddFriendRequest({ nonFriendList }) {
     const userName = useSelector(state => state.currentUser.user);
@@ -11,7 +13,7 @@ function AddFriendRequest({ nonFriendList }) {
     const addFriend = async (friend_id) => {
         console.log(friend_id);
         try {
-            const response = await axios.post("http://localhost:8081/api/addFriendRequest", { user_id, friend_id });
+            const response = await api.post("/addFriendRequest", { user_id, friend_id });
             console.log(response.data);
             setFriendStatusUpdate(prevState => ({
                 ...prevState,

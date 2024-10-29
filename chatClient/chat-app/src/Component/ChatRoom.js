@@ -10,6 +10,7 @@ import style from '../styles/chatRoom.module.css'
 import { FaArrowRight } from 'react-icons/fa';
 import Navigation from './Navigation';
 import { setCurrentUser, clearCurrentUser } from '../redux/store';
+import api from '../services/api';
 
 const ChatApp = () => {
     const dispatch = useDispatch();
@@ -19,11 +20,36 @@ const ChatApp = () => {
     const [message, setMessage] = useState('');
     const [privateRecipient, setPrivateRecipient] = useState('');
     const [UserDetail, SetUserDetail] = useState([]);
+    const navigate = useNavigate();
     const [id, setId] = useState();
     const [previousChat, setPreviousChat] = useState([]);
     const [msgSend, setMsgSend] = useState(false);
-    const CurrentUser = location.state;
-    const navigate = useNavigate();
+    const [CurrentUser, setCurrentuser] = useState();
+    const { email } = location.state;
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const response = await api.get(`/getCurrentUser/${email}`);
+                console.log("Fetching user with email: ", email);
+
+                console.log("CurrentUserDetail ", response.data);
+                setCurrentuser(response.data);
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
+        getData();
+    }, [email]);
+
+    useEffect(() => {
+        if (CurrentUser) {
+            console.log("Dispatch ", CurrentUser.user_id);
+            dispatch(setCurrentUser({ user: CurrentUser.user_name, id: CurrentUser.user_id }));
+        }
+    }, [dispatch, CurrentUser]);
+
     // const ContactName = useSelector(state => state.userName.user);
     const ContactDetails = useSelector(state => {
         // Check if `userName.user` is the group chat or a user object
@@ -46,38 +72,37 @@ const ChatApp = () => {
         }
     });
 
-    useEffect(() => {
-        dispatch(setCurrentUser({ user: CurrentUser.user_name, id: CurrentUser.user_id }));
-    }, [dispatch, CurrentUser]);
+
     useEffect(() => {
         const fetchDataAndConnect = async () => {
-            const user_id = CurrentUser.user_id;
-            const logInResponse = await axios.put(`http://localhost:8081/api/userLogInStatus/${user_id}`);
-            console.log(logInResponse);
-            const webSocketConnection = connect(
-                CurrentUser.user_name,
-                (msg) => {
-                    setPublicMessages((prevMessages) => {
-                        // Log to ensure messages are updating correctly
-                        console.log("Received public message: ", msg);
-                        return [...prevMessages, msg];
-                    });
-                },
-                (msg) => setPrivateMessages((prev) => [...prev, msg])
-            );
+            if (CurrentUser) {
+                const user_id = CurrentUser.user_id;
+                const logInResponse = await api.put(`/userLogInStatus/${user_id}`);
+                console.log(logInResponse);
+                const webSocketConnection = connect(
+                    CurrentUser.user_name,
+                    (msg) => {
+                        setPublicMessages((prevMessages) => {
+                            // Log to ensure messages are updating correctly
+                            console.log("Received public message: ", msg);
+                            return [...prevMessages, msg];
+                        });
+                    },
+                    (msg) => setPrivateMessages((prev) => [...prev, msg])
+                );
 
 
 
-            // Cleanup function to close WebSocket on component unmount
-            return () => {
-                if (webSocketConnection && typeof webSocketConnection.close === 'function') {
-                    webSocketConnection.close();
-                }
+                // Cleanup function to close WebSocket on component unmount
+                return () => {
+                    if (webSocketConnection && typeof webSocketConnection.close === 'function') {
+                        webSocketConnection.close();
+                    }
+                };
             };
-        };
-
+        }
         fetchDataAndConnect();
-    }, [CurrentUser.user_name]);
+    }, [CurrentUser]);
 
     useEffect(() => {
         console.log("Public messages length: ", publicMessages.length);
@@ -106,7 +131,7 @@ const ChatApp = () => {
 
     };
     const getMessage = async () => {
-        const messageResponse = await axios.post(`http://localhost:8081/api/user-connected/${CurrentUser.user_name}`); //TO get the offline messages
+        const messageResponse = await api.post(`/api/user-connected/${CurrentUser.user_name}`); //TO get the offline messages
         console.log("New messages" + messageResponse.data);
         if (messageResponse.data) {
             // Assuming the data is in the expected format
@@ -117,16 +142,17 @@ const ChatApp = () => {
     }
     useEffect(() => {
         const fetchPreviousChatsForContact = async () => {
-            const PreviousMsg = await axios.get(`http://localhost:8081/api/getChatHistory/${CurrentUser.user_name}`);
-            if (ContactName) {
-                setPreviousChat(PreviousMsg.data.filter(data => data.receiverName === ContactName || data.senderName === ContactName));
-            }
-        };
-        setPrivateMessages(privateMessages.filter(data => data.receiverName === ContactName || data.senderName === ContactName));
-
+            if (CurrentUser) {
+                const PreviousMsg = await api.get(`/getChatHistory/${CurrentUser.user_name}`);
+                if (ContactName) {
+                    setPreviousChat(PreviousMsg.data.filter(data => data.receiverName === ContactName || data.senderName === ContactName));
+                }
+            };
+            setPrivateMessages(privateMessages.filter(data => data.receiverName === ContactName || data.senderName === ContactName));
+        }
 
         fetchPreviousChatsForContact();
-    }, [ContactName, CurrentUser.user_name]);
+    }, [ContactName, CurrentUser]);
 
 
     return (

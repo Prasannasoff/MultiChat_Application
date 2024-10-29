@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import {jwtDecode} from 'jwt-decode'; // Correct import
 import './LoginPage.css'; // Import the CSS file
 
 function LoginPage() {
@@ -10,10 +11,17 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`http://localhost:8081/api/login`, { email: email, password });
+      const response = await axios.post(`http://localhost:8081/api/login`, { email, password });
       const token = response.data.token;
-      localStorage.setItem('token', token); // Store the token in local storage
-      navigate('/publicChat');
+      localStorage.setItem('token', token);
+      
+      if (token) {
+        // Decode the token to extract the email
+        const decodedToken = jwtDecode(token);
+        const userEmail = decodedToken.sub; // Renamed variable to avoid conflict
+        console.log(userEmail)
+        navigate('/publicChat', { state: { email: userEmail } });
+      }
     } catch (error) {
       console.error('Login failed:', error);
     }

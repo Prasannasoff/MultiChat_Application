@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import api from '../services/api';
+
 import style from '../styles/ResponseFriendRequest.module.css'
 function ResponseFriendRequest({ userDetail }) {
     const [friendDetail, setFriendDetail] = useState([]);
@@ -9,7 +11,7 @@ function ResponseFriendRequest({ userDetail }) {
     const friend_id = useSelector(state => state.currentUser.id);
     useEffect(() => {
         const getRequest = async () => {
-            const response = await axios.get(`http://localhost:8081/api/getRequest/${friend_id}`);
+            const response = await api.get(`/getRequest/${friend_id}`);
             console.log("FriendList" + response.data);
             if (response.data.length > 0) {
                 const enrichedDetails = response.data.map(friendRequest => {
@@ -29,7 +31,7 @@ function ResponseFriendRequest({ userDetail }) {
         getRequest()
     }, [friend_id]);
     const handleAccept = async (user_id) => {
-        const response = await axios.put(`http://localhost:8081/api/acceptRequest?user_id=${user_id}&friend_id=${friend_id}`);
+        const response = await api.put(`/acceptRequest?user_id=${user_id}&friend_id=${friend_id}`);
 
         setResponse(prevState => ({
             ...prevState,
@@ -38,7 +40,7 @@ function ResponseFriendRequest({ userDetail }) {
         console.log(response.data);
     }
     const handleReject = async (user_id) => {
-        const response = await axios.put(`http://localhost:8081/api/rejectRequest?user_id=${user_id}&friend_id=${friend_id}`);
+        const response = await api.put(`/rejectRequest?user_id=${user_id}&friend_id=${friend_id}`);
 
         setResponse(prevState => ({
             ...prevState,

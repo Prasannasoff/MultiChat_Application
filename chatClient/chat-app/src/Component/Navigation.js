@@ -8,6 +8,7 @@ import ResponseFriendRequest from './ResponseFriendRequest'
 import { setUser, clearUser } from '../redux/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
+import api from '../services/api';
 
 function Navigation() {
     const navigate = useNavigate();
@@ -23,8 +24,8 @@ function Navigation() {
         const fetchDetails = async () => {
             try {
                 const [getResponse, response] = await Promise.all([
-                    axios.get("http://localhost:8081/api/getData"),
-                    axios.get(`http://localhost:8081/api/getFriendList/${user_id}`)
+                    api.get("/getData"),
+                    api.get(`/getFriendList/${user_id}`)
                 ]);
 
                 const users = getResponse.data;
@@ -92,7 +93,7 @@ function Navigation() {
     }, [user_id, currentUserName]);
     const handleLogout = async () => {
         if (user_id) {
-            const logoutResponse = await axios.put(`http://localhost:8081/api/userLogOutStatus/${user_id}`);
+            const logoutResponse = await api.put(`/userLogOutStatus/${user_id}`);
             console.log(logoutResponse);
             navigate('/');
         }
