@@ -73,7 +73,7 @@ public class UserController {
     @GetMapping("/getData")
 
     public List<UserDetails> getDetails() {
-        System.out.print("List:"+repo.findAll());
+
         return repo.findAll();
 
     }
@@ -162,29 +162,6 @@ public class UserController {
 
         return messageList;
     }
-//    public List<Message> PreviousMsg(@PathVariable String username) {
-//        List<ChatHistory> previousMessages = chatHistoryRepo.findByReceiver(username);
-//        List<ChatHistory> senderMessages = chatHistoryRepo.findBySender(username);
-//
-//        System.out.print("Pending Messages" + previousMessages);
-//        List<Message> messageList = new ArrayList<>();
-//        for (ChatHistory chatHistory : previousMessages) {
-//            Message message = new Message();
-//            message.setSenderName(chatHistory.getSender());
-//            message.setReceiverName(chatHistory.getReceiver());
-//            message.setMessage(chatHistory.getMessage());
-//            messageList.add(message);
-//        }
-//        for (ChatHistory chatHistory : senderMessages) {
-//            Message message = new Message();
-//            message.setSenderName(chatHistory.getSender());
-//            message.setReceiverName(chatHistory.getReceiver());
-//            message.setMessage(chatHistory.getMessage());
-//            messageList.add(message);
-//        }
-//        return messageList;
-//
-//    }
 
     @Autowired
     private AddFriendRepo addFriendRepo;
@@ -212,7 +189,7 @@ public class UserController {
         public String acceptRequest(@RequestParam int user_id, @RequestParam int friend_id){
             FriendList friendList = addFriendRepo.findByUserAndFriend(user_id, friend_id);
             friendList.setStatus("Accepted");
-            System.out.println(friendList);
+
             addFriendRepo.save(friendList);
             return "Friend request accepted successfully";
         }
@@ -221,33 +198,32 @@ public class UserController {
     public String deleteRequest(@RequestParam int user_id, @RequestParam int friend_id){
         FriendList friendList = addFriendRepo.findByUserAndFriend(user_id, friend_id);
         friendList.setStatus("Rejected");
-        System.out.println(friendList);
         addFriendRepo.save(friendList);
         return "Friend request Rejected successfully";
     }
 
     @GetMapping("/getRequest/{friend_id}")
     public ResponseEntity getRequest(@PathVariable int friend_id) {
-        System.out.println("Fetching friend request for friend_id: " + friend_id);
+
 
           List<FriendList> friendList = addFriendRepo.findByFriendId(friend_id);
         if (friendList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList());
         }
-        System.out.println("Found friend request: " + friendList);
+
         return ResponseEntity.status(HttpStatus.OK).body(friendList);
 
     }
     @GetMapping("/getFriendList/{user_id}")
     public ResponseEntity getFriendList(@PathVariable int user_id) {
-        System.out.println("Fetching friend request for friend_id: " + user_id);
+
 
         List<FriendList> friendList = addFriendRepo.findByUserOrFriendId(user_id);
 
         if (friendList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(Collections.emptyList());
         }
-        System.out.println("Found friend request: " + friendList);
+
         return ResponseEntity.status(HttpStatus.OK).body(friendList);
 
     }

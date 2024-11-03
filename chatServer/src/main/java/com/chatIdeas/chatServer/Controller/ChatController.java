@@ -43,6 +43,7 @@ private MessageRepository messageRepository;
     private ChatHistoryRepo chatHistoryRepo;
     @MessageMapping("/private-message")
     public void receivePrivateMessage(@Payload Message message) {
+        System.out.println("Name Received "+message.getReceiverName());
         boolean isRecipientOnline = checkUserOnline(message.getReceiverName()); // Implement this logic
         System.out.println("Status"+isRecipientOnline);
         if (isRecipientOnline) {
@@ -62,6 +63,7 @@ private MessageRepository messageRepository;
     @Autowired
     private Repo repo;
     private boolean checkUserOnline(String receiverName) {
+        System.out.println("Receiver Name"+receiverName);
         UserDetails user=repo.findByUserName(receiverName);
         System.out.println("USerNameActive"+user.isActive());
         if(user.isActive()){

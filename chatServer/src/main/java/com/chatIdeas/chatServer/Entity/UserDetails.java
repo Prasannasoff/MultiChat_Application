@@ -10,7 +10,7 @@ public class UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int user_id;
 
-    @Column(name="user_name", length=50)
+    @Column(name="user_name", length=50,unique = true)
     private String user_name;
 
     @Column(name="email", length=100, unique=true) // Email should be unique
