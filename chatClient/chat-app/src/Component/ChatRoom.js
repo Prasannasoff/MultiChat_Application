@@ -7,11 +7,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import Layout from './Layout';
 import style from '../styles/chatRoom.module.css'
-import { FaArrowRight } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Navigation from './Navigation';
 import { setCurrentUser, clearCurrentUser } from '../redux/store';
 import api from '../services/api';
+import { setUser, clearUser } from '../redux/store';
+import { faArrowLeft } from 'react-icons/fa';
 
+import chatbg from '../assets/chatbg.jpg';
 const ChatApp = () => {
     const dispatch = useDispatch();
     const location = useLocation();
@@ -154,16 +157,25 @@ const ChatApp = () => {
         fetchPreviousChatsForContact();
     }, [ContactName, CurrentUser]);
 
+    const toggleBack = () => {
 
+        dispatch(clearUser());
+
+
+    }
     return (
-        <div className='mainCont'>
-            <Navigation />
+        <div className={style.mainCont}>
+            {ContactDetails ? <div className={style.offNavigation}><Navigation /></div> :
+                <div className={style.onNavigation}><Navigation /></div>}
+            <div className={`${style.chatCont} ${ContactDetails ? style.visible : ''}`} style={{ backgroundImage: `url(${chatbg})` }}>
 
-            <div className={style.chatCont}>
                 <div className={style.header}>
                     {ContactDetails ?
                         <>
                             <div className={style.headerDetails}>
+                                <div className={style.toggleButton} onClick={toggleBack}>
+                                    <FaArrowLeft /> {/* You can use a hamburger icon here */}
+                                </div>
                                 <img
                                     src={ContactDetails.image && ContactDetails.image.startsWith('data:image/') ? ContactDetails.image : `data:image/jpeg;base64,${ContactDetails.image}`}
                                     className={style.header_photo}
@@ -225,7 +237,7 @@ const ChatApp = () => {
                         </div>
                     ) :
 
-                    <div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
 
                         <div className={style.msgCont}>
                             {previousChat.map((msg, index) => (

@@ -17,8 +17,6 @@ function App() {
 
           <Route path='/' element={<LoginPage />} />
           <Route path='/publicChat' element={<ChatRoom />} />
-          <Route path='/sample' element={<Sample />} />
-          
           <Route path='/register' element={<RegisterPage />} />
 
         </Routes>

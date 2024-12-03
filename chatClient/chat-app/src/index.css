@@ -6,15 +6,6 @@ body {
   overflow: hidden;
 }
 
-.mainCont {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  height: 100%;
-  background-color: black;
-
-
-}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

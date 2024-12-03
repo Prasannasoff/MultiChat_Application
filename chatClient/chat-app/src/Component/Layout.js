@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 const Layout = React.memo(({ friendDetail }) => {
-  console.log("FriendDetail",friendDetail)
+  console.log("FriendDetail", friendDetail)
   const friendList = friendDetail.filter(friendDetail => friendDetail.status == 'Accepted');
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -55,41 +55,36 @@ const Layout = React.memo(({ friendDetail }) => {
 
 
   return (
-    <div className={style.layoutInnerCont}>
-
-      <div className={style.searchBar}>
-        <input type="text" className='input' placeholder='Search Contacts' />
-      </div>
-      <div className={style.ContactName}>
-        <div className={`${userName === groupChat ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(groupChat)}>
-          <img src={lst[1].image} className={style.profile_photo} alt="Group Chat" />
-          <div className={style.about}>
-            <div className={style.name}>{groupChat}</div>
-          </div>
+    <div className={style.ContactName}>
+      <div className={`${userName === groupChat ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(groupChat)}>
+        <img src={lst[1].image} className={style.profile_photo} alt="Group Chat" />
+        <div className={style.about}>
+          <div className={style.name}>{groupChat}</div>
         </div>
-        {friendList.map(data => {
+      </div>
+      {friendList.map(data => {
 
-          const isActive = userName === data.user_name;
-          return (
-            <div key={data.user_id} className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data)}>
-              <img
-                src={data.image && data.image.startsWith('data:image/') ? data.image : `data:image/jpeg;base64,${data.image}`}
-                className={style.profile_photo}
-                alt={`${data.user_name}'s profile`}
-              />
-              <div className={style.about}>
-                <div className={style.name}>{data.user_name}</div>
-                <div className={style.desc}>{data.about}</div>
-              </div>
+        const isActive = userName === data.user_name;
+        return (
+          <div key={data.user_id} className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data)}>
+            <img
+              src={data.image && data.image.startsWith('data:image/') ? data.image : `data:image/jpeg;base64,${data.image}`}
+              className={style.profile_photo}
+              alt={`${data.user_name}'s profile`}
+            />
+            <div className={style.about}>
+              <div className={style.name}>{data.user_name}</div>
+              <div className={style.desc}>{data.about}</div>
             </div>
+          </div>
 
-          );
+        );
 
-        })}
+      })}
 
-        <div className={style.PeopleKnow}>People You May Know</div>
+      <div className={style.PeopleKnow}>People You May Know</div>
 
-        {/* {lst.map((person, index) => (
+      {/* {lst.map((person, index) => (
             <div key={index} className={style.nameBanner}>
               <img src={person.image} className={style.profile_photo} alt={person.name} />
               <div className={style.about}>
@@ -100,11 +95,11 @@ const Layout = React.memo(({ friendDetail }) => {
             </div>
           ))} */}
 
-        <div className={style.selectedUser}>
-          {userName ? <p>Selected User: {userName}</p> : <p>No User Selected</p>}
-        </div>
+      <div className={style.selectedUser}>
+        {userName ? <p>Selected User: {userName}</p> : <p>No User Selected</p>}
       </div>
     </div>
+
   );
 });
 

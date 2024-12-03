@@ -8,6 +8,10 @@ import ResponseFriendRequest from './ResponseFriendRequest'
 import { setUser, clearUser } from '../redux/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
+
 import api from '../services/api';
 
 function Navigation() {
@@ -71,7 +75,7 @@ function Navigation() {
                             ...data,
                             status: "none"
 
-                        }   
+                        }
                     });
 
                     const requestedFriendList = addFriendStatus.filter(friend => friend.status == 'requested');
@@ -100,14 +104,22 @@ function Navigation() {
     }
     return (
         <div className={style.LayoutCont}>
-            <div className={style.logoutBtn}>
+            {/* <div className={style.logoutBtn}>
                 <button onClick={handleLogout} >Logout</button>
+            </div> */}
+            <div className={style.searchBar}>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <FontAwesomeIcon icon={faSearch} style={{color:'white'}}/>
+
+                    <input type="text" className='input' placeholder='Search Contacts' />
+                </div>
             </div>
+
             <div className={style.NavCont}>
                 <div className={style.NavigationMenu}>
                     <div className={`${style.NavItem} ${activePage === 'chatPage' ? style.NavItemActive : ''}`}
                         onClick={() => setActivePage('chatPage')}>
-                        Chat Page
+                        Chat
                     </div>
                     <div className={`${style.NavItem} ${activePage === 'addFriend' ? style.NavItemActive : ''}`}
                         onClick={() => setActivePage('addFriend')}>
@@ -115,7 +127,7 @@ function Navigation() {
                     </div>
                     <div className={`${style.NavItem} ${activePage === 'friendRequest' ? style.NavItemActive : ''}`}
                         onClick={() => setActivePage('friendRequest')}>
-                        Friend Request
+                        Request
                     </div>
                 </div>
             </div>

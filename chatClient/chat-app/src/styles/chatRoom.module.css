@@ -1,27 +1,89 @@
-.chatCont {
-    background: radial-gradient(circle at bottom right,
-            rgba(76, 87, 186, 0.502)5%,
-            /* Starting color (blue) */
-            rgba(35, 38, 58, 0.776)60%
-            /* Ending color (blackish) */
-        );
-    width: 100%;
+.mainCont {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100%;
+    background-color: black;
 
-    overflow-y: auto;
-    height: 100vh;
 
 }
+
+
+
+.chatCont.visible,
+.chatCont {
+
+    /* Correct path from public */
+    background-size: cover;
+    /* Makes the image cover the entire container */
+    background-position: center;
+    /* Centers the image */
+    background-repeat: no-repeat;
+    /* Prevents the image from repeating */
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+}
+.toggleButton {
+    display: none; /* Hide by default */
+    /* position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 30px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1002; */
+  }
 
 .header {
     display: flex;
     height: 10%;
     width: 100%;
+    font-size: 25px;
     position: fixed;
     top: 0;
-    background-color: rgb(10, 11, 21);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: rgb(26, 26, 26);
+}
 
+.headerDetails {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    align-items: center;
+    padding-left: 30px;
 
+}
 
+.headerMain {
+    display: flex;
+    flex-direction: column;
+    width: 12rem;
+}
+
+.headerName {
+    color: white;
+    font-size: 1em;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.headerStatus {
+    font-size: 13px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    color: rgb(59, 237, 86)
+}
+
+.header_photo {
+    object-fit: contain;
+    border-radius: 500px;
+    width: 2em;
+    height: 2em;
+    background-color: white;
 }
 
 /* Hides the scrollbar in WebKit-based browsers (Chrome, Safari, etc.) */
@@ -84,41 +146,51 @@
 }
 
 .sendMsgCont {
-    width: 90%;
-    align-items: center;
-    bottom: 0;
-    position: fixed;
+    width: 80%;
+    /* Adjust the width to be responsive */
+    max-width: 80%;
+    font-size: 25px;
+    /* Prevent it from growing too large */
     display: flex;
-    height: 8%;
+
+    justify-content: flex-start;
+    /* Align to the left */
+    align-items: center;
+    position: fixed;
     bottom: 5px;
+    justify-content: center;
+    /* Keep it at the bottom */
     padding: 10px;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
 }
 
 .msgInput {
     display: flex;
     height: 100%;
-    border-radius: 10px;
-    width: 80%;
+    width: 30em;
+    flex-wrap: wrap;
+    /* Ensure it takes up the full width of the container */
+    border-radius: 20px;
     align-items: center;
-    padding: 5px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 15px 15px;
     color: white;
-    background-color: rgb(10, 11, 21);
+    background-color: rgb(26, 26, 26);
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 600;
     font-size: 20px;
     justify-content: space-between;
-
 }
 
 .inputBox {
-    width: 90%;
+    display: flex;
+    /* Ensure the input box also takes up full width */
 }
 
 .sendMsgBtn {
     display: flex;
-    border-radius: 500px;
+    border-radius: 50%;
+    /* Round the button */
     height: 2rem;
     width: 2rem;
     align-items: center;
@@ -126,46 +198,63 @@
     background-color: rgb(40, 68, 128);
 }
 
-.sample {
-    background-color: red;
-    color: white;
-    font-weight: 600;
-    font-size: 30;
-}
 
-.headerDetails {
-    display: flex;
-    gap: 10px;
-    padding: 10px;
-    align-items: center;
-    padding-left: 30px;
+@media (max-width: 768px) {
+    .mainCont {
+        flex-direction: column;
+        /* Stack layout for mobile */
+    }
 
-}
+    .offNavigation {
+        display: none;
+    }
 
-.headerMain {
-    display: flex;
-    flex-direction: column;
-    width: 12rem;
-}
+    .onNavigation {
+        display: block;
+    }
 
-.headerName {
-    color: white;
-    font-size: 25px;
-    font-weight: 600;
-    font-family: Arial, Helvetica, sans-serif;
-}
+    .chatCont {
+        display: none;
+        /* Hide chat container when no contact is selected */
+    }
 
-.headerStatus {
-    font-size: 13px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 600;
-    color: rgb(59, 237, 86)
-}
+    /* Show chat container when contact is selected */
+    .chatCont.visible {
+        /* Correct path from public */
+        background-size: cover;
+        /* Makes the image cover the entire container */
+        background-position: center;
+        /* Centers the image */
+        background-repeat: no-repeat;
+        /* Prevents the image from repeating */
+        width: 100%;
+        height: 100vh;
+        overflow-y: auto;
+        display: block;
 
-.header_photo {
-    object-fit: contain;
-    border-radius: 500px;
-    width: 4rem;
-    height: 4rem;
-    background-color: white;
+    }
+
+    .sendMsgCont {
+        display: flex !important;
+        min-width: 100% !important;
+        font-size: 20px !important;
+        
+
+    }
+    .headerDetails{
+        padding-left: 15px;
+    }
+    .toggleButton {
+        display: flex; /* Hide by default */
+     
+        font-size: 28px;
+        color: white;
+        border: none;
+   
+        cursor: pointer;
+        z-index: 1002;
+      }
+
+ 
+
 }
