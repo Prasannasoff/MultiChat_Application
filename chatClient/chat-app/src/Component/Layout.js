@@ -62,28 +62,41 @@ const Layout = React.memo(({ friendDetail }) => {
           <div className={style.name}>{groupChat}</div>
         </div>
       </div>
+      {/* <hr style={{
+        border: 'none',
+        borderTop: '0.1px solid grey',
+        width: '100%'
+      }} /> */}
       {friendList.map(data => {
 
         const isActive = userName === data.user_name;
         return (
-          <div key={data.user_id} className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data)}>
-            <img
-              src={data.image && data.image.startsWith('data:image/') ? data.image : `data:image/jpeg;base64,${data.image}`}
-              className={style.profile_photo}
-              alt={`${data.user_name}'s profile`}
-            />
-            <div className={style.about}>
-              <div className={style.name}>{data.user_name}</div>
-              <div className={style.desc}>{data.about}</div>
+          <div>
+            <div key={data.user_id} className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data)}>
+              <img
+                src={data.image && data.image.startsWith('data:image/') ? data.image : `data:image/jpeg;base64,${data.image}`}
+                className={style.profile_photo}
+                alt={`${data.user_name}'s profile`}
+              />
+              <div className={style.about}>
+                <div className={style.name}>{data.user_name}</div>
+                <div className={style.desc}>{data.about}</div>
+              </div>
+
             </div>
+            {/* <hr style={{
+              border: 'none',
+              borderTop: '0.1px solid grey',
+              width: '100%'
+            }} /> */}
           </div>
+
 
         );
 
       })}
 
-      <div className={style.PeopleKnow}>People You May Know</div>
-
+      
       {/* {lst.map((person, index) => (
             <div key={index} className={style.nameBanner}>
               <img src={person.image} className={style.profile_photo} alt={person.name} />
@@ -95,9 +108,7 @@ const Layout = React.memo(({ friendDetail }) => {
             </div>
           ))} */}
 
-      <div className={style.selectedUser}>
-        {userName ? <p>Selected User: {userName}</p> : <p>No User Selected</p>}
-      </div>
+     
     </div>
 
   );

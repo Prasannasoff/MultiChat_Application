@@ -29,8 +29,10 @@ public class MessageEntity {
     @Column(name = "message", nullable = false)
     private String message;
 
+
     @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
+
     public MessageEntity(String sender, String receiver, String message, LocalDateTime timestamp) {
         this.sender = sender;
         this.receiver = receiver;

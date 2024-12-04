@@ -15,6 +15,7 @@ import { setUser, clearUser } from '../redux/store';
 import { faArrowLeft } from 'react-icons/fa';
 
 import chatbg from '../assets/chatbg.jpg';
+import chatpng from '../assets/chat.png'
 const ChatApp = () => {
     const dispatch = useDispatch();
     const location = useLocation();
@@ -147,6 +148,7 @@ const ChatApp = () => {
         const fetchPreviousChatsForContact = async () => {
             if (CurrentUser) {
                 const PreviousMsg = await api.get(`/getChatHistory/${CurrentUser.user_name}`);
+
                 if (ContactName) {
                     setPreviousChat(PreviousMsg.data.filter(data => data.receiverName === ContactName || data.senderName === ContactName));
                 }
@@ -169,8 +171,8 @@ const ChatApp = () => {
                 <div className={style.onNavigation}><Navigation /></div>}
             <div className={`${style.chatCont} ${ContactDetails ? style.visible : ''}`} style={{ backgroundImage: `url(${chatbg})` }}>
 
-                <div className={style.header}>
-                    {ContactDetails ?
+                {ContactDetails ?
+                    <div className={style.header}>
                         <>
                             <div className={style.headerDetails}>
                                 <div className={style.toggleButton} onClick={toggleBack}>
@@ -189,8 +191,11 @@ const ChatApp = () => {
                             </div>
                         </>
 
-                        : <div>No user Selected</div>}
-                </div>
+                    </div>
+                    : <div className={style.chatBgCont}>
+                        <img src={chatpng} className={style.chatStyle}></img>
+                        <div style={{ fontFamily: 'Segoe UI', fontWeight: '600',color:"white", fontSize: '14px' }}>Connect Freely: Chat, Share, and Stay Connected Anytime!</div>
+                    </div>}
 
 
 
@@ -206,6 +211,7 @@ const ChatApp = () => {
                                     console.log(`Rendering message from ${msg.senderName}: ${msg.message}`),
                                     msg.senderName == CurrentUser.user_name ? (
                                         <div key={index} className={style.senderOutCont}>
+
                                             <div className={style.senderBox}>{msg.message}</div>
                                         </div>
 
@@ -243,6 +249,7 @@ const ChatApp = () => {
                             {previousChat.map((msg, index) => (
                                 msg.senderName == CurrentUser.user_name ? (
                                     <div key={index} className={style.senderOutCont}>
+
                                         <div className={style.senderBox}>{msg.message}</div>
                                     </div>
 
@@ -250,6 +257,7 @@ const ChatApp = () => {
 
                                     //< div key={index} > {`${msg.senderName} to ${msg.receiverName}: ${msg.message}`}</div>)
                                     <div key={index} className={style.receiverOutCont}>
+
                                         <div className={style.receiverBox}>{msg.message}</div>
                                     </div>
                                 )
@@ -272,19 +280,20 @@ const ChatApp = () => {
                                 )
                             ))}
                         </div>
-
-                        <div className={style.sendMsgCont}>
-                            <div className={style.msgInput}>
-                                <input
-                                    type="text"
-                                    placeholder='Type a message here'
-                                    value={message}
-                                    className={style.inputBox}
-                                    onChange={(e) => setMessage(e.target.value)}
-                                />
-                                <div onClick={handlePrivateMessageSend} className={style.sendMsgBtn}><FaArrowRight /></div>
+                        {ContactDetails &&
+                            <div className={style.sendMsgCont}>
+                                <div className={style.msgInput}>
+                                    <input
+                                        type="text"
+                                        placeholder='Type a message here'
+                                        value={message}
+                                        className={style.inputBox}
+                                        onChange={(e) => setMessage(e.target.value)}
+                                    />
+                                    <div onClick={handlePrivateMessageSend} className={style.sendMsgBtn}><FaArrowRight /></div>
+                                </div>
                             </div>
-                        </div>
+                        }
 
                         {/* <div>  <button onClick={getMessage}>Get Message</button>   </div>*/}
 

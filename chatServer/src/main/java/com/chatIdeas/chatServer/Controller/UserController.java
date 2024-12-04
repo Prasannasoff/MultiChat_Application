@@ -151,11 +151,13 @@ public class UserController {
                 message.setSenderName(chatHistory.getSender());
                 message.setReceiverName(chatHistory.getReceiver());
                 message.setMessage(chatHistory.getMessage());
+
             } else if (messageObject instanceof MessageEntity) {
                 MessageEntity messageEntity = (MessageEntity) messageObject;
                 message.setSenderName(messageEntity.getSender());
                 message.setReceiverName(messageEntity.getReceiver());
                 message.setMessage(messageEntity.getMessage());
+
             }
             messageList.add(message);
         }

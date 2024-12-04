@@ -108,8 +108,8 @@ function Navigation() {
                 <button onClick={handleLogout} >Logout</button>
             </div> */}
             <div className={style.searchBar}>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <FontAwesomeIcon icon={faSearch} style={{color:'white'}}/>
+                <div style={{ display: 'flex', gap: '10px',alignItems:'center'}}>
+                    <FontAwesomeIcon icon={faSearch} style={{color:'grey',fontSize:'16px'}}/>
 
                     <input type="text" className='input' placeholder='Search Contacts' />
                 </div>
