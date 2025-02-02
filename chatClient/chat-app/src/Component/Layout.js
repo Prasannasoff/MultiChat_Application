@@ -96,7 +96,7 @@ const Layout = React.memo(({ friendDetail }) => {
 
       })}
 
-      
+
       {/* {lst.map((person, index) => (
             <div key={index} className={style.nameBanner}>
               <img src={person.image} className={style.profile_photo} alt={person.name} />
@@ -108,7 +108,7 @@ const Layout = React.memo(({ friendDetail }) => {
             </div>
           ))} */}
 
-     
+
     </div>
 
   );

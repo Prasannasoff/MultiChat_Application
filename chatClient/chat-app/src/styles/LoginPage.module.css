@@ -1,0 +1,119 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5a3c6 0%, #a18cd1 50%, #93c5fd 100%);
+}
+
+.card {
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+}
+
+.iconContainer {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #1a365d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    width: 48px;
+    height: 48px;
+    color: white;
+}
+
+.inputGroup {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.input {
+    width: 100%;
+    padding: 12px 12px;
+    border-radius: 8px;
+    border: none;
+    background-color: #1a365d;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+.input::placeholder {
+    color: #cbd5e1;
+}
+
+.optionsRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.rememberMe {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox {
+    cursor: pointer;
+}
+
+.label {
+    color: #374151;
+    cursor: pointer;
+}
+
+.forgotPassword {
+    color: #374151;
+    text-decoration: none;
+}
+
+.forgotPassword:hover {
+    text-decoration: underline;
+}
+
+.loginButton {
+    width: 60%;
+    
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background-color: #1a365d;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.loginButton:hover {
+    background-color: #152951;
+}
+
+.registerLink {
+    color: #374151;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.registerLink:hover {
+    text-decoration: underline;
+}

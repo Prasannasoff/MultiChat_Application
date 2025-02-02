@@ -47,7 +47,7 @@
     height: 100vh;
     flex-direction: column;
     background-color: rgba(0, 0, 0, 0.8);
-    gap:10px;
+    gap: 10px;
 }
 
 .chatStyle {
@@ -217,7 +217,7 @@
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
     .mainCont {
         flex-direction: column;
         /* Stack layout for mobile */

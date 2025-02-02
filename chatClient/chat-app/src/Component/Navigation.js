@@ -16,6 +16,7 @@ import api from '../services/api';
 
 function Navigation() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const { TabPane } = Tabs;
     const user_id = useSelector(state => state.currentUser.id);
@@ -97,19 +98,28 @@ function Navigation() {
     }, [user_id, currentUserName]);
     const handleLogout = async () => {
         if (user_id) {
-            const logoutResponse = await api.put(`/userLogOutStatus/${user_id}`);
-            console.log(logoutResponse);
-            navigate('/');
+            try {
+                // Call API to update user logout status
+                await api.put(`/userLogOutStatus/${user_id}`);
+
+                dispatch(clearUser());
+
+                // Navigate to Login Page
+                navigate('/');
+            } catch (error) {
+                console.error("Error during logout:", error);
+            }
         }
-    }
+    };
+
     return (
         <div className={style.LayoutCont}>
             {/* <div className={style.logoutBtn}>
                 <button onClick={handleLogout} >Logout</button>
             </div> */}
             <div className={style.searchBar}>
-                <div style={{ display: 'flex', gap: '10px',alignItems:'center'}}>
-                    <FontAwesomeIcon icon={faSearch} style={{color:'grey',fontSize:'16px'}}/>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <FontAwesomeIcon icon={faSearch} style={{ color: 'grey', fontSize: '16px' }} />
 
                     <input type="text" className='input' placeholder='Search Contacts' />
                 </div>
@@ -128,6 +138,10 @@ function Navigation() {
                     <div className={`${style.NavItem} ${activePage === 'friendRequest' ? style.NavItemActive : ''}`}
                         onClick={() => setActivePage('friendRequest')}>
                         Request
+                    </div>
+                    <div className={`${style.NavItem} `}
+                        onClick={() => { handleLogout() }}>
+                        Logout
                     </div>
                 </div>
             </div>

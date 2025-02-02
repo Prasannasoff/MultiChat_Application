@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode'; // Correct import
-import './LoginPage.css'; // Import the CSS file
+import { jwtDecode } from 'jwt-decode'; // Correct import
+import styles from '../styles/LoginPage.module.css' // Import the CSS file
+import { UserCircle } from "lucide-react"
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,8 +14,6 @@ function LoginPage() {
     try {
       const response = await axios.post(`http://localhost:8081/api/login`, { email, password });
       const token = response.data.token;
-      localStorage.setItem('token', token);
-      
       if (token) {
         // Decode the token to extract the email
         const decodedToken = jwtDecode(token);
@@ -28,16 +27,43 @@ function LoginPage() {
   };
 
   return (
-    <div className="container">
-      <h2>Welcome Back!</h2>
-      <label>Enter the Email:</label>
-      <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div className={styles.iconContainer}>
+            <UserCircle className={styles.icon} />
+          </div>
+          <div style={{ color: "white", fontSize: "28px", fontFamily: "Poppins" }}>Login</div>
+        </div>
 
-      <label>Password:</label>
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <div className={styles.inputGroup}>
+          <input
+            type="email"
+            placeholder="Email ID"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={styles.input}
+          />
 
-      <button onClick={handleLogin}>Enter the chat</button>
-      <Link className="link" to="/register">CLICK HERE TO REGISTER</Link>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={styles.input}
+          />
+
+        
+
+          <button onClick={handleLogin} className={styles.loginButton}>
+            LOGIN
+          </button>
+        </div>
+
+        <Link to="/register" className={styles.registerLink}>
+          CLICK HERE TO REGISTER
+        </Link>
+      </div>
     </div>
   );
 }

@@ -189,6 +189,7 @@ const ChatApp = () => {
                                     <div className={style.headerStatus}>{ContactDetails.active ? 'Online' : 'Offline'}</div>
                                 </div>
                             </div>
+                            
                         </>
 
                     </div>
