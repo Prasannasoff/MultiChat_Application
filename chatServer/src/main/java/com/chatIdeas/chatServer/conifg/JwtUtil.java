@@ -1,5 +1,6 @@
 package com.chatIdeas.chatServer.config;
-
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,15 +23,24 @@ public class JwtUtil {
         return createToken(claims, email);
     }
 
+
     private String createToken(Map<String, Object> claims, String subject) {
+        // Set system time in IST (or your local time zone)
+        ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
+        ZonedDateTime expirationTime = currentTime.plusHours(1);
+
+        System.out.println("System Time (IST): " + currentTime);
+        System.out.println("Token Expiry (IST): " + expirationTime);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setIssuedAt(Date.from(currentTime.toInstant()))  // Convert to Date
+                .setExpiration(Date.from(expirationTime.toInstant()))  // Convert to Date
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
+
 
     public Boolean validateToken(String token) {
         try {
@@ -38,19 +48,27 @@ public class JwtUtil {
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token)
                     .getBody();
-            return !isTokenExpired(token);
+
+            boolean isExpired = isTokenExpired(token);
+
+            if (isExpired) {
+                System.out.println("🚫 Token has expired in IST timezone.");
+            }
+
+            return !isExpired;
 
         } catch (ExpiredJwtException e) {
-            System.out.println("Token has expired");
+            System.out.println("🚫 Token has expired!");
             return false;
         } catch (SignatureException | MalformedJwtException e) {
-            System.out.println("Invalid token signature or structure");
+            System.out.println("🚫 Invalid token signature or structure.");
             return false;
         } catch (Exception e) {
-            System.out.println("Token validation error");
+            System.out.println("🚫 Token validation error.");
             return false;
         }
     }
+
 
     public String extractEmail(String token) {
         return extractAllClaims(token).getSubject();
@@ -61,6 +79,15 @@ public class JwtUtil {
     }
 
     private Boolean isTokenExpired(String token) {
-        return extractAllClaims(token).getExpiration().before(new Date());
+        ZonedDateTime nowIST = ZonedDateTime.now(ZoneId.of("Asia/Kolkata")); // Current IST time
+        ZonedDateTime tokenExpiry = extractAllClaims(token).getExpiration()
+                .toInstant()
+                .atZone(ZoneId.of("Asia/Kolkata")); // Convert Expiry Time to IST
+
+        System.out.println("🔹 Current IST Time: " + nowIST);
+        System.out.println("🔹 Token Expiry Time (IST): " + tokenExpiry);
+
+        return tokenExpiry.isBefore(nowIST); // Check if token expiry is before current time
     }
+
 }

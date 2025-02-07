@@ -39,12 +39,13 @@ public class UserController {
             @RequestParam("about") String about,
             @RequestParam("email") String email,
             @RequestParam("password") String password,
-            @RequestParam("phone") String phone,
-            @RequestParam("image") MultipartFile image) {
+            @RequestParam("phone") String phone)
+//            @RequestParam("image") MultipartFile image)
+    {
 
         try {
             // Convert the uploaded image into byte array
-            byte[] imageBytes = image.getBytes();
+//            byte[] imageBytes = image.getBytes();
 
             // Create a new UserDetails object and set the fields
             UserDetails user = new UserDetails();
@@ -53,7 +54,7 @@ public class UserController {
             user.setEmail(email);
             user.setPassword(password);
             user.setPhone_number(phone);
-            user.setImage(imageBytes);  // Set the image data
+//            user.setImage(imageBytes);  // Set the image data
 
             // Save the user object to the database
             repo.save(user);

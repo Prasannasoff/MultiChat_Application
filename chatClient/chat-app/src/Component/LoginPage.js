@@ -14,6 +14,7 @@ function LoginPage() {
     try {
       const response = await axios.post(`http://localhost:8081/api/login`, { email, password });
       const token = response.data.token;
+      localStorage.setItem("token", token);
       if (token) {
         // Decode the token to extract the email
         const decodedToken = jwtDecode(token);
@@ -53,7 +54,7 @@ function LoginPage() {
             className={styles.input}
           />
 
-        
+
 
           <button onClick={handleLogin} className={styles.loginButton}>
             LOGIN

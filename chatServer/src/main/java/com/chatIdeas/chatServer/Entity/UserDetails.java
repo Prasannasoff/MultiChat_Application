@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int user_id;
 
     @Column(name="user_name", length=50,unique = true)
@@ -24,12 +24,13 @@ public class UserDetails {
     @Column(name="phone_number", length=15)
     private String phone_number;
 
-    @Lob // Use Lob for storing large objects like images
-    @Column(name="image")
-    private byte[] image;
+//    @Lob // Use Lob for storing large objects like images
+//    @Column(name="image")
+//    private byte[] image;
 
-    @Column(name = "Active", columnDefinition = "TINYINT(1)") // Active status as a tinyint (boolean)
+    @Column(name = "Active", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean Active;
+
 
     // Constructors
     public UserDetails() {
@@ -42,7 +43,7 @@ public class UserDetails {
         this.about=about;
         this.password = password;
         this.phone_number = phone_number;
-        this.image = image;
+//        this.image = image;
         this.Active = active;
     }
 
@@ -95,13 +96,13 @@ public class UserDetails {
         this.phone_number = phone_number;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
+//    public byte[] getImage() {
+//        return image;
+//    }
+//
+//    public void setImage(byte[] image) {
+//        this.image = image;
+//    }
 
     public boolean isActive() {
         return Active;

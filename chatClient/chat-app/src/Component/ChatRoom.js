@@ -178,11 +178,11 @@ const ChatApp = () => {
                                 <div className={style.toggleButton} onClick={toggleBack}>
                                     <FaArrowLeft /> {/* You can use a hamburger icon here */}
                                 </div>
-                                <img
+                                {/* <img
                                     src={ContactDetails.image && ContactDetails.image.startsWith('data:image/') ? ContactDetails.image : `data:image/jpeg;base64,${ContactDetails.image}`}
                                     className={style.header_photo}
                                     alt={`${ContactDetails.user_name}'s profile`}
-                                />
+                                /> */}
                                 <div className={style.headerMain}>
                                     <div className={style.headerName}>{ContactDetails.user_name ? ContactDetails.user_name : ContactDetails}</div>
 

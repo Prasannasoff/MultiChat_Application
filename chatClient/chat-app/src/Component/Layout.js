@@ -73,11 +73,11 @@ const Layout = React.memo(({ friendDetail }) => {
         return (
           <div>
             <div key={data.user_id} className={`${isActive ? style.activeNameBanner : style.nameBanner}`} onClick={() => handleContact(data)}>
-              <img
+              {/* <img
                 src={data.image && data.image.startsWith('data:image/') ? data.image : `data:image/jpeg;base64,${data.image}`}
                 className={style.profile_photo}
                 alt={`${data.user_name}'s profile`}
-              />
+              /> */}
               <div className={style.about}>
                 <div className={style.name}>{data.user_name}</div>
                 <div className={style.desc}>{data.about}</div>
