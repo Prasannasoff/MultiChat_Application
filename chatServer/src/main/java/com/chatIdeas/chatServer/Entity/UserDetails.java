@@ -3,7 +3,8 @@ package com.chatIdeas.chatServer.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="UserDetail")
+@Table(name="user_detail")
+
 public class UserDetails {
 
     @Id
@@ -24,13 +25,12 @@ public class UserDetails {
     @Column(name="phone_number", length=15)
     private String phone_number;
 
-//    @Lob // Use Lob for storing large objects like images
-//    @Column(name="image")
-//    private byte[] image;
+    @Lob
+    @Column(name="image", columnDefinition="LONGBLOB")
+    private byte[] image;
 
-    @Column(name = "Active", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean Active;
-
+    @Column(name = "Active", columnDefinition = "TINYINT(1)") // Active status as a tinyint (boolean)
+    private Boolean Active;
 
     // Constructors
     public UserDetails() {
@@ -43,7 +43,7 @@ public class UserDetails {
         this.about=about;
         this.password = password;
         this.phone_number = phone_number;
-//        this.image = image;
+        this.image = image;
         this.Active = active;
     }
 
@@ -96,13 +96,13 @@ public class UserDetails {
         this.phone_number = phone_number;
     }
 
-//    public byte[] getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(byte[] image) {
-//        this.image = image;
-//    }
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 
     public boolean isActive() {
         return Active;
