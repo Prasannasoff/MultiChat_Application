@@ -9,10 +9,10 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000") // Your React app's URL
+         registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000", "https://multichat-application-1.onrender.com") // Corrected syntax
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true); // Allows cookies or authentication headers
+                .allowCredentials(false);
     }
 }
