@@ -2,7 +2,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axios from 'axios';
 
-const WEBSOCKET_URL = 'http://localhost:8081/ws';
+const WEBSOCKET_URL = 'https://multichat-application-1.onrender.com/ws';
 
 let stompClient = null;
 
