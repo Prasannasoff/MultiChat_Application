@@ -21,15 +21,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Corrected CORS setup
-                .csrf().disable()
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Apply CORS configuration
+                .csrf().disable() // Disable CSRF for APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/register").permitAll()
-                        .requestMatchers("/ws/**", "/chatroom/**", "/user/**").permitAll()
-
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/login", "/api/register").permitAll() // Allow public access
+                        .requestMatchers("/ws/**", "/chatroom/**", "/user/**").permitAll() // Allow WebSocket and other endpoints
+                        .anyRequest().authenticated() // Secure all other endpoints
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
         return http.build();
     }
 
@@ -37,21 +36,14 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-  config.setAllowedOrigins(List.of("https://multi-chat-application.vercel.app")); 
-        
-      // ✅ Allow all headers
-    config.setAllowedHeaders(List.of("*"));  
+        config.setAllowedOrigins(List.of("https://multi-chat-application.vercel.app")); // Allow specific origin
+        config.setAllowedHeaders(List.of("*")); // Allow all headers
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow all HTTP methods
+        config.setExposedHeaders(List.of("Authorization", "Access-Control-Allow-Origin")); // Expose required headers
 
-
-        // ✅ Allow all HTTP methods
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));  
-
-         // ✅ Expose required headers
-    config.setExposedHeaders(List.of("Authorization", "Access-Control-Allow-Origin"));  
-      
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source; // Return the correct CorsConfigurationSource
+        source.registerCorsConfiguration("/**", config); // Apply to all endpoints
+        return source;
     }
 
     @Bean
