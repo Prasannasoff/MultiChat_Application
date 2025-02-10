@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create an Axios instance
 const api = axios.create({
-    baseURL: 'http://localhost:8081/api', // Replace with your base API URL
+    baseURL: 'https://multichat-application-1.onrender.com/api', // Replace with your base API URL
 });
 
 
