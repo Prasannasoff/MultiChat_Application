@@ -27,7 +27,7 @@ function RegisterPage() {
         // formData.append('image', image);  // Append the image file
 
         try {
-            const response = await axios.post("http://localhost:8081/api/register", formData, {
+            const response = await axios.post("https://multichat-application-1.onrender.com/api/register", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'  // Set correct headers for file upload
                 }
