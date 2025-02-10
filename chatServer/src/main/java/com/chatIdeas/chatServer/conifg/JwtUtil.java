@@ -29,8 +29,6 @@ public class JwtUtil {
         ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
         ZonedDateTime expirationTime = currentTime.plusHours(1);
 
-        System.out.println("System Time (IST): " + currentTime);
-        System.out.println("Token Expiry (IST): " + expirationTime);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -84,8 +82,6 @@ public class JwtUtil {
                 .toInstant()
                 .atZone(ZoneId.of("Asia/Kolkata")); // Convert Expiry Time to IST
 
-        System.out.println("🔹 Current IST Time: " + nowIST);
-        System.out.println("🔹 Token Expiry Time (IST): " + tokenExpiry);
 
         return tokenExpiry.isBefore(nowIST); // Check if token expiry is before current time
     }
