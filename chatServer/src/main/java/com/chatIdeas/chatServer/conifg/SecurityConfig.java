@@ -37,7 +37,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-       config.setAllowedOriginPatterns(List.of("http://localhost:3000", "https://multi-chat-application.vercel.app")); // Use patterns instead of fixed origins
+     config.setAllowedOrigins(Arrays.asList("*"));
+
         config.setAllowedHeaders(List.of("*")); // Allow all headers
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow all methods
 
