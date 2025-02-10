@@ -39,8 +39,11 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
      config.setAllowedOrigins(Arrays.asList("*"));
 
-        config.setAllowedHeaders(List.of("*")); // Allow all headers
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow all methods
+          // Allow only your frontend
+    config.setAllowedOrigins(List.of("https://multi-chat-application.vercel.app")); 
+    
+    // Allow all headers (fixing the issue)
+    config.setAllowedHeaders(List.of("*"));  
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
