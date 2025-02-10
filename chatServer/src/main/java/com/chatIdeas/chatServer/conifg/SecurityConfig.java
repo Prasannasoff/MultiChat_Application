@@ -19,35 +19,18 @@ public class SecurityConfig {
     private JwtAuthFilter jwtAuthFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Apply CORS configuration
-                .csrf().disable() // Disable CSRF for APIs
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/register").permitAll() // Allow public access
-                        .requestMatchers("/ws/**", "/chatroom/**", "/user/**").permitAll() // Allow WebSocket and other endpoints
-                        .anyRequest().authenticated() // Secure all other endpoints
-                )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
-        return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("https://multi-chat-application.vercel.app")); // Allow specific origin
-        config.setAllowedHeaders(List.of("*")); // Allow all headers
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow all HTTP methods
-        config.setExposedHeaders(List.of("Authorization", "Access-Control-Allow-Origin")); // Expose required headers
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Apply to all endpoints
-        return source;
-    }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        return new CorsFilter(corsConfigurationSource());
-    }
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .cors().disable()  // ❌ Disabling CORS (Not Secure)
+        .csrf().disable()
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/api/login", "/api/register").permitAll()
+            .anyRequest().authenticated()
+        )
+        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    return http.build();
 }
+
+    }
+
+   
