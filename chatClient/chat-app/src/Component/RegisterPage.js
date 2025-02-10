@@ -24,7 +24,7 @@ function RegisterPage() {
         formData.append('email', email);
         formData.append('password', password);
         formData.append('phone', phone);
-        // formData.append('image', image);  // Append the image file
+        formData.append('image', image);  // Append the image file
 
         try {
             const response = await axios.post("https://multichat-application-1.onrender.com/api/register", formData, {
@@ -49,7 +49,7 @@ function RegisterPage() {
                 <input type="number" className={styles["form-control"]} placeholder="Enter Phone No" value={phone} onChange={(e) => setPhone(e.target.value)} />
                 
                 {/* File input for image upload */}
-                {/* <input type="file" className={styles["form-control"]} onChange={handleImageChange} /> */}
+                <input type="file" className={styles["form-control"]} onChange={handleImageChange} /> 
                 
                 <input type="text" className={styles["form-control"]} placeholder="Enter About" value={about} onChange={(e) => setAbout(e.target.value)} />
 
