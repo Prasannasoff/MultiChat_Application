@@ -12,7 +12,7 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`http://localhost:8081/api/login`, { email, password });
+      const response = await axios.post(`https://multichat-application-1.onrender.com/api/login`, { email, password });
       const token = response.data.token;
       localStorage.setItem("token", token);
       if (token) {
